@@ -1,0 +1,25 @@
+# Frontend
+lifeconsole-facade/node_modules/
+lifeconsole-facade/dist/
+
+# Backend
+lifeconsole-foundation/target/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+
+# Logs
+*.log
