@@ -90,7 +90,7 @@ function Home() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05, ease: 'easeOut' }}
-            className="mt-4 font-serif text-6xl leading-[0.95] font-medium text-white sm:text-7xl lg:text-8xl"
+            className="mt-4 font-serif text-2xl leading-tight font-medium text-white sm:text-3xl"
           >
             <TypedText text="Sir." delay={NAME_DELAY} speed={NAME_SPEED} />
           </motion.h1>
