@@ -11,7 +11,6 @@ import {
   Heart,
   BarChart3,
   Settings,
-  SquareTerminal,
 } from 'lucide-react';
 import NavItem from '../navigation/NavItem';
 
@@ -32,6 +31,11 @@ const PRIMARY_NAV = [
 function Sidebar({ open, onClose }) {
   return (
     <>
+      {/* Wordmark pinned above the desktop rail, in the top-left corner */}
+      <span className="fixed top-4 left-4 z-40 hidden text-[15px] font-semibold tracking-tight text-zinc-100 lg:block">
+        LifeConsole
+      </span>
+
       {/* Mobile scrim */}
       <button
         type="button"
@@ -46,31 +50,17 @@ function Sidebar({ open, onClose }) {
 
       <aside
         className={[
-          'fixed inset-y-0 left-0 z-40 w-[17rem] p-3 lg:w-[4.5rem] lg:p-2',
+          'fixed top-0 bottom-0 left-0 z-40 w-[17rem] p-3 lg:top-14 lg:w-[4.5rem] lg:p-2',
           'transition-transform duration-300 ease-out lg:translate-x-0 lg:transition-none',
           open ? 'translate-x-0' : '-translate-x-full',
         ].join(' ')}
       >
-        <div className="flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md">
-          {/* Branding */}
-          <div className="flex items-center gap-2.5 px-4 pt-5 pb-6 lg:justify-center lg:px-0 lg:pt-4 lg:pb-5">
-            <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-white/[0.1] bg-white/[0.06]">
-              <SquareTerminal
-                className="h-4 w-4 text-zinc-300"
-                strokeWidth={1.75}
-                aria-hidden="true"
-              />
-            </span>
-            <span className="text-[15px] font-medium tracking-tight text-zinc-100 lg:sr-only">
-              LifeConsole
-            </span>
-          </div>
-
+        <div className="flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md lg:border-0 lg:bg-transparent lg:backdrop-blur-none">
           {/* Primary navigation */}
           <nav
             aria-label="Primary"
             onClick={onClose}
-            className="flex-1 space-y-0.5 overflow-y-auto px-3 lg:overflow-visible lg:px-2"
+            className="flex-1 space-y-0.5 overflow-y-auto px-3 pt-4 lg:overflow-visible lg:px-2 lg:pt-5"
           >
             {PRIMARY_NAV.map((item) => (
               <NavItem key={item.locked ? item.label : item.to} {...item} />
