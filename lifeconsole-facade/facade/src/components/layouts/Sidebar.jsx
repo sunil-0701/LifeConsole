@@ -78,11 +78,8 @@ function Sidebar({ open, onClose }) {
           </nav>
 
           {/* Bottom navigation */}
-          <div onClick={onClose} className="space-y-3 border-t border-white/[0.06] px-3 py-4">
+          <div onClick={onClose} className="border-t border-white/[0.06] px-3 py-4">
             <NavItem to="/settings" label="Settings" icon={Settings} />
-            <p className="px-3 font-mono text-[11px] leading-relaxed text-zinc-600">
-              &ldquo;A better you, every day.&rdquo;
-            </p>
           </div>
         </div>
       </aside>
