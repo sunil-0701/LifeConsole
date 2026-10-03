@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import TypedText from '../components/ui/TypedText';
 
 const BOUNDARY_HOURS = [12, 17];
+
+// Typewriter timing for the hero. The longest greeting ("Good afternoon,")
+// finishes typing at 150 + 14 * 45 = 780ms, so the name starts on a 180ms
+// beat after it and never overlaps.
+const GREETING_DELAY = 150;
+const TYPE_SPEED = 45;
+const NAME_DELAY = 960;
+const NAME_SPEED = 95;
 
 function greetingFor(hour) {
   if (hour < 12) return 'Good morning';
@@ -70,7 +79,12 @@ function Home() {
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="font-mono text-[13px] tracking-[0.3em] text-zinc-500 uppercase"
           >
-            {greeting},
+            <TypedText
+              key={greeting}
+              text={`${greeting},`}
+              delay={GREETING_DELAY}
+              speed={TYPE_SPEED}
+            />
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
@@ -78,7 +92,7 @@ function Home() {
             transition={{ duration: 0.4, delay: 0.05, ease: 'easeOut' }}
             className="mt-4 font-serif text-6xl leading-[0.95] font-medium text-white sm:text-7xl lg:text-8xl"
           >
-            Sunil.
+            <TypedText text="Sir." delay={NAME_DELAY} speed={NAME_SPEED} />
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 8 }}
