@@ -1,0 +1,17 @@
+import { Heart } from 'lucide-react';
+import EmptyState from '../components/ui/EmptyState';
+
+function Wishlist() {
+  return (
+    <div className="mx-auto max-w-5xl">
+      <h1 className="mb-8 text-3xl font-medium tracking-tight text-white">Wishlist</h1>
+      <EmptyState
+        icon={Heart}
+        title="Your wishlist is empty."
+        hint="Things you want to save for will appear here."
+      />
+    </div>
+  );
+}
+
+export default Wishlist;
