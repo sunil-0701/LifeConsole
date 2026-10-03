@@ -6,10 +6,6 @@ function prefersReducedMotion() {
   return window.matchMedia(REDUCED_MOTION).matches;
 }
 
-function Caret() {
-  return <span className="caret" />;
-}
-
 function TypedText({ text, delay = 0, speed = 45, className }) {
   const [count, setCount] = useState(() => (prefersReducedMotion() ? text.length : 0));
 
@@ -46,19 +42,9 @@ function TypedText({ text, delay = 0, speed = 45, className }) {
     content = text;
   } else if (count === 0) {
     // Reserve the final width before the first character lands.
-    content = (
-      <>
-        <Caret />
-        <span className="invisible">{text}</span>
-      </>
-    );
+    content = <span className="invisible">{text}</span>;
   } else {
-    content = (
-      <>
-        {text.slice(0, count)}
-        <Caret />
-      </>
-    );
+    content = text.slice(0, count);
   }
 
   return (
