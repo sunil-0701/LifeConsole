@@ -3,7 +3,7 @@ import EmptyState from '../components/ui/EmptyState';
 
 function Journal() {
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <h1 className="mb-8 text-3xl font-medium tracking-tight text-white">Journal</h1>
       <EmptyState
         icon={NotebookPen}
