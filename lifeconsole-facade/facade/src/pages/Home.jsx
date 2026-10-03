@@ -4,13 +4,13 @@ import TypedText from '../components/ui/TypedText';
 
 const BOUNDARY_HOURS = [12, 17];
 
-// Typewriter timing for the hero. The longest greeting ("Good afternoon,")
-// finishes typing at 150 + 14 * 45 = 780ms, so the name starts on a 180ms
-// beat after it and never overlaps.
+// Typewriter timing for the hero: one continuous typing pass across the
+// whole line. "Sir." starts the instant the greeting's final character
+// lands, +40ms only so the comma always renders first.
 const GREETING_DELAY = 150;
 const TYPE_SPEED = 45;
-const NAME_DELAY = 960;
 const NAME_SPEED = 95;
+const SYNC_GAP = 40;
 
 function greetingFor(hour) {
   if (hour < 12) return 'Good morning';
@@ -68,31 +68,33 @@ function useGreeting() {
 
 function Home() {
   const greeting = useGreeting();
+  const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
 
   return (
     <div className="mx-auto max-w-6xl">
       <section className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="font-mono text-[13px] tracking-[0.3em] text-zinc-500 uppercase"
-          >
-            <TypedText
-              key={greeting}
-              text={`${greeting},`}
-              delay={GREETING_DELAY}
-              speed={TYPE_SPEED}
-            />
-          </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05, ease: 'easeOut' }}
-            className="mt-4 font-serif text-2xl leading-tight font-medium text-white sm:text-3xl"
+            className="leading-tight"
           >
-            <TypedText text="Sir." delay={NAME_DELAY} speed={NAME_SPEED} />
+            <span className="font-mono text-[13px] font-normal tracking-[0.3em] text-zinc-500 uppercase">
+              <TypedText
+                key={greeting}
+                text={`${greeting},`}
+                delay={GREETING_DELAY}
+                speed={TYPE_SPEED}
+              />
+            </span>{' '}
+            <TypedText
+              key={greeting}
+              text="Sir."
+              delay={nameDelay}
+              speed={NAME_SPEED}
+              className="font-serif text-2xl font-medium text-white sm:text-3xl"
+            />
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 8 }}
