@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 const DATE_OPTIONS = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-const TIME_OPTIONS = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+const TIME_OPTIONS = {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hourCycle: 'h23', // railway time — 00–23, no AM/PM
+};
 
 function LiveClock() {
   const [now, setNow] = useState(() => new Date());

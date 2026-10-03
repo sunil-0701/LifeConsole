@@ -3,7 +3,7 @@ import EmptyState from '../components/ui/EmptyState';
 
 function Career() {
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <h1 className="mb-8 text-3xl font-medium tracking-tight text-white">Career</h1>
       <EmptyState
         icon={Briefcase}

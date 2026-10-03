@@ -71,7 +71,7 @@ function Home() {
   const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div>
       <section className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div>
           <motion.h1

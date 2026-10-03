@@ -12,7 +12,7 @@ function MainLayout() {
     <div className="min-h-screen">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="lg:pl-[17rem]">
+      <div className="lg:pl-[4.5rem]">
         <Topbar onMenu={() => setSidebarOpen(true)} />
 
         <motion.main
