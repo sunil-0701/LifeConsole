@@ -1,14 +1,64 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-function greetingFor(date) {
-  const hour = date.getHours();
+const BOUNDARY_HOURS = [12, 17];
+
+function greetingFor(hour) {
   if (hour < 12) return 'Good morning';
   if (hour < 17) return 'Good afternoon';
   return 'Good evening';
 }
 
+// Milliseconds until the next hour at which the greeting changes.
+function msUntilNextChange(now) {
+  const next = new Date(now);
+  const boundary = BOUNDARY_HOURS.find((hour) => hour > now.getHours());
+
+  if (boundary === undefined) {
+    next.setDate(next.getDate() + 1);
+    next.setHours(0, 0, 0, 0);
+  } else {
+    next.setHours(boundary, 0, 0, 0);
+  }
+
+  return next.getTime() - now.getTime();
+}
+
+function useGreeting() {
+  const [greeting, setGreeting] = useState(() => greetingFor(new Date().getHours()));
+
+  useEffect(() => {
+    let timer;
+
+    const sync = () => {
+      setGreeting(greetingFor(new Date().getHours()));
+      schedule();
+    };
+
+    // One timeout aimed exactly at the next boundary — no interval, no polling.
+    const schedule = () => {
+      clearTimeout(timer);
+      timer = setTimeout(sync, msUntilNextChange(new Date()));
+    };
+
+    const onVisible = () => {
+      if (!document.hidden) sync();
+    };
+
+    schedule();
+    document.addEventListener('visibilitychange', onVisible);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, []);
+
+  return greeting;
+}
+
 function Home() {
-  const greeting = greetingFor(new Date());
+  const greeting = useGreeting();
 
   return (
     <div className="mx-auto max-w-6xl">
