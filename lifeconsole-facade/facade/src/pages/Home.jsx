@@ -7,9 +7,9 @@ const BOUNDARY_HOURS = [12, 17];
 // Typewriter timing for the hero: one continuous typing pass across the
 // whole line. "Sir." starts the instant the greeting's final character
 // lands, +40ms only so the comma always renders first.
-const GREETING_DELAY = 150;
-const TYPE_SPEED = 45;
-const NAME_SPEED = 95;
+const GREETING_DELAY = 220;
+const TYPE_SPEED = 60;
+const NAME_SPEED = 120;
 const SYNC_GAP = 40;
 
 function greetingFor(hour) {

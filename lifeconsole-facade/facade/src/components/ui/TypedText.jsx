@@ -16,17 +16,27 @@ function TypedText({ text, delay = 0, speed = 45, className }) {
   useEffect(() => {
     if (prefersReducedMotion()) return undefined;
 
-    let index = 0;
-    let timer;
+    let frame = 0;
+    let last = 0;
+    const start = performance.now();
 
-    const type = () => {
-      index += 1;
-      setCount(index);
-      if (index < text.length) timer = setTimeout(type, speed);
+    // One frame loop on an absolute schedule: cadence stays locked to the
+    // display refresh instead of drifting like a setTimeout chain, and
+    // state updates only fire when a character actually lands.
+    const tick = (now) => {
+      const elapsed = now - start - delay;
+      const index = Math.max(0, Math.min(text.length, Math.floor(elapsed / speed) + 1));
+
+      if (index !== last) {
+        last = index;
+        setCount(index);
+      }
+
+      if (last < text.length) frame = requestAnimationFrame(tick);
     };
 
-    timer = setTimeout(type, delay);
-    return () => clearTimeout(timer);
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
   }, [text, delay, speed]);
 
   const done = count >= text.length;
