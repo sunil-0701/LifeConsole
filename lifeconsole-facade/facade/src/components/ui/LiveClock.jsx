@@ -17,7 +17,7 @@ function LiveClock() {
   }, []);
 
   return (
-    <div className="hidden items-center gap-3 text-[13px] text-zinc-500 sm:flex">
+    <div className="hidden items-center gap-3 text-[11px] text-zinc-500 sm:flex">
       <span className="whitespace-nowrap">{now.toLocaleDateString('en-US', DATE_OPTIONS)}</span>
       <span className="h-4 w-px bg-white/10" aria-hidden="true" />
       <span className="whitespace-nowrap tabular-nums text-zinc-400">

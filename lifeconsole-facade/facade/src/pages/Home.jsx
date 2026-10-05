@@ -72,7 +72,7 @@ function Home() {
 
   return (
     <div>
-      <section className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
+      <section className="grid max-w-5xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div>
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
