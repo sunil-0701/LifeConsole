@@ -36,7 +36,6 @@ function Sidebar({ open, onClose }) {
         LifeConsole
       </span>
 
-      {/* Mobile scrim */}
       <button
         type="button"
         aria-label="Close navigation"
@@ -56,7 +55,6 @@ function Sidebar({ open, onClose }) {
         ].join(' ')}
       >
         <div className="flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md lg:border-0 lg:bg-transparent lg:backdrop-blur-none">
-          {/* Primary navigation */}
           <nav
             aria-label="Primary"
             onClick={onClose}
