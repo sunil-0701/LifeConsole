@@ -67,7 +67,7 @@ function Sidebar({ open, onClose }) {
             ))}
           </nav>
 
-          {/* Bottom navigation */}
+          
           <div onClick={onClose} className="border-t border-white/[0.06] px-3 py-4 lg:px-2">
             <NavItem to="/settings" label="Settings" icon={Settings} />
           </div>
