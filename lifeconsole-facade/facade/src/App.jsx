@@ -12,6 +12,7 @@ import Analytics from './pages/Analytics';
 import Career from './pages/Career';
 import Projects from './pages/Projects';
 import Settings from './pages/Settings';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function App() {
           <Route path="career" element={<Career />} />
           <Route path="projects" element={<Projects />} />
           <Route path="settings" element={<Settings />} />
+          {/* Anything unmatched used to render the shell with an empty body. */}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
