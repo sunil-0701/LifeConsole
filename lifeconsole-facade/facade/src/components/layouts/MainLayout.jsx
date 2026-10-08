@@ -4,11 +4,19 @@ import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import CommandPalette from '../ui/CommandPalette';
+import { navItemForPath } from '../navigation/navItems';
 
 function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const { pathname } = useLocation();
+
+  // The tab label follows the rail: "Tasks · LifeConsole". Unmatched paths
+  // fall through navItemForPath, so the 404 gets its own wording.
+  useEffect(() => {
+    const item = navItemForPath(pathname);
+    document.title = item ? `${item.label} · LifeConsole` : 'Page not found · LifeConsole';
+  }, [pathname]);
 
   // Cmd/Ctrl+K toggles the palette from anywhere in the app.
   useEffect(() => {
