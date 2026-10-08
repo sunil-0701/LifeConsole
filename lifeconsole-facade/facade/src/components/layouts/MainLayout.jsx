@@ -31,6 +31,27 @@ function MainLayout() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // While an overlay (mobile drawer or palette) is open, the page behind it
+  // must not scroll and Escape must dismiss it.
+  useEffect(() => {
+    if (!sidebarOpen && !paletteOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKey = (event) => {
+      if (event.key !== 'Escape') return;
+      setSidebarOpen(false);
+      setPaletteOpen(false);
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [sidebarOpen, paletteOpen]);
+
   return (
     <div className="min-h-screen">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
