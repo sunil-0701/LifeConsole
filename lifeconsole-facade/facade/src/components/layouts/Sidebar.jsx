@@ -1,32 +1,5 @@
-import {
-  Home,
-  NotebookPen,
-  ListChecks,
-  Target,
-  Wallet,
-  Repeat,
-  StickyNote,
-  Image,
-  FileText,
-  Heart,
-  BarChart3,
-  Settings,
-} from 'lucide-react';
 import NavItem from '../navigation/NavItem';
-
-const PRIMARY_NAV = [
-  { to: '/', label: 'Home', icon: Home, end: true },
-  { to: '/journal', label: 'Journal', icon: NotebookPen },
-  { to: '/tasks', label: 'Tasks', icon: ListChecks },
-  { to: '/goals', label: 'Goals', icon: Target },
-  { to: '/finance', label: 'Finance', icon: Wallet },
-  { to: '/habits', label: 'Habits', icon: Repeat },
-  { to: '/sticky-notes', label: 'Sticky Notes', icon: StickyNote },
-  { label: 'Gallery', icon: Image, locked: true },
-  { label: 'Documents', icon: FileText, locked: true },
-  { to: '/wishlist', label: 'Wishlist', icon: Heart },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-];
+import { PRIMARY_NAV, SETTINGS_NAV } from '../navigation/navItems';
 
 function Sidebar({ open, onClose }) {
   return (
@@ -67,9 +40,8 @@ function Sidebar({ open, onClose }) {
             ))}
           </nav>
 
-          
           <div onClick={onClose} className="border-t border-white/[0.06] px-3 py-4 lg:px-2">
-            <NavItem to="/settings" label="Settings" icon={Settings} />
+            <NavItem {...SETTINGS_NAV} />
           </div>
         </div>
       </aside>
