@@ -53,3 +53,19 @@
     background-clip: content-box;
   }
 }
+
+/* TypedText already skips its typing loop under reduced motion; this covers
+   the CSS-driven half — route fades, the drawer slide, hover transitions. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
