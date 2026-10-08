@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import {
+  BarChart3,
+  ListChecks,
+  NotebookPen,
+  Plus,
+  Repeat,
+  StickyNote,
+  Target,
+  Wallet,
+} from 'lucide-react';
 import TypedText from '../components/ui/TypedText';
 
 const BOUNDARY_HOURS = [12, 17];
@@ -11,6 +22,21 @@ const GREETING_DELAY = 220;
 const TYPE_SPEED = 60;
 const NAME_SPEED = 120;
 const SYNC_GAP = 40;
+
+const QUICK_ACTIONS = [
+  { to: '/tasks', label: 'New task', icon: Plus },
+  { to: '/journal', label: 'Write entry', icon: NotebookPen },
+  { to: '/sticky-notes', label: 'New note', icon: StickyNote },
+];
+
+const AREAS = [
+  { to: '/tasks', label: 'Tasks', icon: ListChecks, blurb: 'Plan and time-block your day.' },
+  { to: '/journal', label: 'Journal', icon: NotebookPen, blurb: 'Reflect while it is fresh.' },
+  { to: '/goals', label: 'Goals', icon: Target, blurb: 'The outcomes you steer toward.' },
+  { to: '/habits', label: 'Habits', icon: Repeat, blurb: 'Small actions, repeated daily.' },
+  { to: '/finance', label: 'Finance', icon: Wallet, blurb: 'Money in, money out.' },
+  { to: '/analytics', label: 'Analytics', icon: BarChart3, blurb: 'How the last weeks went.' },
+];
 
 function greetingFor(hour) {
   if (hour < 12) return 'Good morning';
@@ -68,6 +94,7 @@ function useGreeting() {
 
 function Home() {
   const greeting = useGreeting();
+  const navigate = useNavigate();
   const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
 
   return (
@@ -120,11 +147,46 @@ function Home() {
         </motion.blockquote>
       </section>
 
+      {/* Quick actions: the three things worth one click from anywhere. */}
       <section className="mt-14 border-t border-white/[0.06] pt-6 sm:mt-20">
-        <p className="font-mono text-xs text-zinc-600">
-          Today&rsquo;s focus, quick actions, and area overviews will appear
-          here.
-        </p>
+        <div className="flex flex-wrap gap-2">
+          {QUICK_ACTIONS.map((action) => (
+            <button
+              key={action.to}
+              type="button"
+              onClick={() => navigate(action.to)}
+              className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3.5 py-2 text-sm text-zinc-300 transition-colors duration-150 hover:bg-white/[0.08] hover:text-white"
+            >
+              <action.icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              {action.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Area overview: one card per section, each deep-linking to it. */}
+      <section className="mt-10">
+        <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-600 uppercase">Areas</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {AREAS.map((area) => (
+            <button
+              key={area.to}
+              type="button"
+              onClick={() => navigate(area.to)}
+              className="group flex flex-col items-start gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-colors duration-150 hover:border-white/[0.1] hover:bg-white/[0.05]"
+            >
+              <area.icon
+                className="h-[18px] w-[18px] text-zinc-500 transition-colors duration-150 group-hover:text-zinc-300"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
+              <span className="text-sm font-medium text-zinc-300 group-hover:text-white">
+                {area.label}
+              </span>
+              <span className="text-xs leading-relaxed text-zinc-600">{area.blurb}</span>
+            </button>
+          ))}
+        </div>
       </section>
     </div>
   );

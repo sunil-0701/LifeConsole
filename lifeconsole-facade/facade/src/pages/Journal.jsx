@@ -1,10 +1,11 @@
 import { NotebookPen } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Journal() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Journal</h1>
+      <PageHeader title="Journal" hint="A running record of your days." />
       <EmptyState
         icon={NotebookPen}
         title="No journal entries yet."

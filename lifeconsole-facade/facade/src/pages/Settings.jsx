@@ -1,10 +1,11 @@
 import { Settings } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function SettingsPage() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Settings</h1>
+      <PageHeader title="Settings" hint="How LifeConsole behaves for you." />
       <EmptyState
         icon={Settings}
         title="Preferences are not available yet."
