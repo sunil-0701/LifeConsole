@@ -12,8 +12,20 @@ function LiveClock() {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
+    let id;
+
+    // Each tick is aimed at the next whole second, so the readout flips on the
+    // boundary instead of wherever the component happened to mount — and a tab
+    // left open for days never accumulates setInterval drift.
+    const schedule = () => {
+      id = setTimeout(() => {
+        setNow(new Date());
+        schedule();
+      }, 1000 - (Date.now() % 1000));
+    };
+
+    schedule();
+    return () => clearTimeout(id);
   }, []);
 
   return (
