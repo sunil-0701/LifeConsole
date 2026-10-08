@@ -1,10 +1,11 @@
 import { Wallet } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Finance() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Finance</h1>
+      <PageHeader title="Finance" hint="Money in, money out, nothing hidden." />
       <EmptyState
         icon={Wallet}
         title="No financial data yet."

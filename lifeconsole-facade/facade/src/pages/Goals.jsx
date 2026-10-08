@@ -1,10 +1,11 @@
 import { Target } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Goals() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Goals</h1>
+      <PageHeader title="Goals" hint="The outcomes you are steering toward." />
       <EmptyState
         icon={Target}
         title="No goals set yet."

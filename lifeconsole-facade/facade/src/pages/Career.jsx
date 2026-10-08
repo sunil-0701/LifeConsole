@@ -1,10 +1,11 @@
 import { Briefcase } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Career() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Career</h1>
+      <PageHeader title="Career" hint="Skills, applications, and the next move." />
       <EmptyState
         icon={Briefcase}
         title="Nothing tracked yet."

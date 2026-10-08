@@ -1,10 +1,11 @@
 import { Repeat } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Habits() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Habits</h1>
+      <PageHeader title="Habits" hint="Small actions, repeated until they stick." />
       <EmptyState
         icon={Repeat}
         title="No habits tracked yet."

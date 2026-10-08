@@ -1,10 +1,11 @@
 import { ListChecks } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Tasks() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Tasks</h1>
+      <PageHeader title="Tasks" hint="Everything you plan to do, in one list." />
       <EmptyState
         icon={ListChecks}
         title="No tasks yet."

@@ -1,10 +1,11 @@
 import { FolderKanban } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Projects() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Projects</h1>
+      <PageHeader title="Projects" hint="The things you are building." />
       <EmptyState
         icon={FolderKanban}
         title="No active projects."

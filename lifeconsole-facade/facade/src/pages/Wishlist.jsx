@@ -1,10 +1,11 @@
 import { Heart } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function Wishlist() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Wishlist</h1>
+      <PageHeader title="Wishlist" hint="Things worth saving up for." />
       <EmptyState
         icon={Heart}
         title="Your wishlist is empty."

@@ -1,10 +1,11 @@
 import { StickyNote } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
+import PageHeader from '../components/ui/PageHeader';
 
 function StickyNotes() {
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-semibold tracking-tight text-white">Sticky Notes</h1>
+      <PageHeader title="Sticky Notes" hint="Scraps and reminders that do not need a full page." />
       <EmptyState
         icon={StickyNote}
         title="No notes yet."
