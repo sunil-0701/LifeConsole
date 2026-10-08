@@ -1,19 +1,34 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import CommandPalette from '../ui/CommandPalette';
 
 function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const { pathname } = useLocation();
+
+  // Cmd/Ctrl+K toggles the palette from anywhere in the app.
+  useEffect(() => {
+    const onKey = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <div className="min-h-screen">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="lg:pl-[4.5rem]">
-        <Topbar onMenu={() => setSidebarOpen(true)} />
+        <Topbar onMenu={() => setSidebarOpen(true)} onSearch={() => setPaletteOpen(true)} />
 
         <motion.main
           key={pathname}
@@ -25,6 +40,9 @@ function MainLayout() {
           <Outlet />
         </motion.main>
       </div>
+
+      {/* Mounted only while open — a fresh instance means a fresh query. */}
+      {paletteOpen ? <CommandPalette onClose={() => setPaletteOpen(false)} /> : null}
     </div>
   );
 }
