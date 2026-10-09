@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import CommandPalette from '../ui/CommandPalette';
+import PageFallback from '../ui/PageFallback';
 import { navItemForPath } from '../navigation/navItems';
 
 function MainLayout() {
@@ -92,7 +93,10 @@ function MainLayout() {
           transition={{ duration: 0.2, ease: 'easeOut' }}
           className="px-5 py-8 focus:outline-none sm:px-8 sm:py-10"
         >
-          <Outlet />
+          {/* Sections are lazy chunks — the shell never unmounts while one loads. */}
+          <Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </Suspense>
         </motion.main>
       </div>
 

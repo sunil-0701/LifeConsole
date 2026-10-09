@@ -1,19 +1,24 @@
+import { lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import MainLayout from './components/layouts/MainLayout';
 import Home from './pages/Home';
-import Journal from './pages/Journal';
-import Tasks from './pages/Tasks';
-import Goals from './pages/Goals';
-import Finance from './pages/Finance';
-import Habits from './pages/Habits';
-import StickyNotes from './pages/StickyNotes';
-import Wishlist from './pages/Wishlist';
-import Analytics from './pages/Analytics';
-import Career from './pages/Career';
-import Projects from './pages/Projects';
-import Settings from './pages/Settings';
-import NotFound from './pages/NotFound';
+
+// Home stays eager — it is the landing route, and pulling its chunk before
+// first paint keeps the greeting animation immediate. Everything else loads
+// on navigation, so the initial bundle only pays for the shell.
+const Journal = lazy(() => import('./pages/Journal'));
+const Tasks = lazy(() => import('./pages/Tasks'));
+const Goals = lazy(() => import('./pages/Goals'));
+const Finance = lazy(() => import('./pages/Finance'));
+const Habits = lazy(() => import('./pages/Habits'));
+const StickyNotes = lazy(() => import('./pages/StickyNotes'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const Career = lazy(() => import('./pages/Career'));
+const Projects = lazy(() => import('./pages/Projects'));
+const Settings = lazy(() => import('./pages/Settings'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
   return (
