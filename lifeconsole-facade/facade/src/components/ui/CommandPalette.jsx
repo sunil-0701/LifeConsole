@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { ALL_NAV } from '../navigation/navItems';
+import { recentSections } from '../../lib/sectionRecents';
 
 // Palette of every unlocked section. Mounted only while open, so query and
 // highlight start fresh every time; opened with Cmd/Ctrl+K or the topbar
@@ -12,11 +13,28 @@ function CommandPalette({ onClose }) {
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
 
+  // No query: sections you visited recently float to the top, flagged as such.
+  // A query replaces the list with plain matches, ordered by label.
   const results = useMemo(() => {
     const items = ALL_NAV.filter((item) => item.to && !item.locked);
     const needle = query.trim().toLowerCase();
-    if (!needle) return items;
-    return items.filter((item) => item.label.toLowerCase().includes(needle));
+
+    if (needle) {
+      return items
+        .filter((item) => item.label.toLowerCase().includes(needle))
+        .map((item) => ({ item, recent: false }));
+    }
+
+    const recents = recentSections();
+    const recentItems = items
+      .filter((item) => recents.includes(item.to))
+      .sort((a, b) => recents.indexOf(a.to) - recents.indexOf(b.to))
+      .map((item) => ({ item, recent: true }));
+    const rest = items
+      .filter((item) => !recents.includes(item.to))
+      .map((item) => ({ item, recent: false }));
+
+    return [...recentItems, ...rest];
   }, [query]);
 
   // Steal focus on mount so typing starts filtering immediately.
@@ -40,8 +58,8 @@ function CommandPalette({ onClose }) {
       setActive((index) => (results.length === 0 ? 0 : (index - 1 + results.length) % results.length));
     } else if (event.key === 'Enter') {
       event.preventDefault();
-      const item = results[safeActive];
-      if (item) run(item);
+      const entry = results[safeActive];
+      if (entry) run(entry.item);
     } else if (event.key === 'Escape') {
       event.preventDefault();
       onClose();
@@ -88,7 +106,7 @@ function CommandPalette({ onClose }) {
               No section matches &ldquo;{query.trim()}&rdquo;.
             </li>
           ) : (
-            results.map((item, index) => (
+            results.map(({ item, recent }, index) => (
               <li key={item.to} role="presentation">
                 <button
                   type="button"
@@ -96,10 +114,15 @@ function CommandPalette({ onClose }) {
                   aria-selected={index === safeActive}
                   onClick={() => run(item)}
                   onMouseEnter={() => setActive(index)}
+                  style={
+                    index === safeActive
+                      ? { backgroundColor: 'rgb(var(--accent-rgb) / 0.14)' }
+                      : undefined
+                  }
                   className={[
                     'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-100',
                     index === safeActive
-                      ? 'bg-white/[0.07] text-white'
+                      ? 'text-white'
                       : 'text-zinc-400 hover:text-zinc-200',
                   ].join(' ')}
                 >
@@ -112,7 +135,14 @@ function CommandPalette({ onClose }) {
                     aria-hidden="true"
                   />
                   <span className="font-medium">{item.label}</span>
-                  <span className="ml-auto font-mono text-[11px] text-zinc-600">{item.to}</span>
+                  <span className="ml-auto flex items-center gap-2">
+                    {recent ? (
+                      <span className="font-mono text-[10px] tracking-wider text-zinc-600 uppercase">
+                        recent
+                      </span>
+                    ) : null}
+                    <span className="font-mono text-[11px] text-zinc-600">{item.to}</span>
+                  </span>
                 </button>
               </li>
             ))

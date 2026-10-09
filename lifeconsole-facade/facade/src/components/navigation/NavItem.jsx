@@ -37,10 +37,18 @@ function NavItem({ to, icon: Icon, label, end = false, locked = false }) {
         onClick={() => navigate(to)}
         aria-label={label}
         aria-current={isActive ? 'page' : undefined}
+        style={
+          isActive
+            ? {
+                borderColor: 'rgb(var(--accent-rgb) / 0.28)',
+                backgroundColor: 'rgb(var(--accent-rgb) / 0.10)',
+              }
+            : undefined
+        }
         className={[
           'group relative flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors duration-150 lg:justify-center lg:px-1',
           isActive
-            ? 'border-white/[0.08] bg-white/[0.07] text-white'
+            ? 'text-white'
             : 'border-transparent text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-200',
         ].join(' ')}
       >

@@ -1,14 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import CommandPalette from '../ui/CommandPalette';
+import ShortcutHelp from '../ui/ShortcutHelp';
+import PageFallback from '../ui/PageFallback';
 import { navItemForPath } from '../navigation/navItems';
+import { rememberSection } from '../../lib/sectionRecents';
 
 function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const { pathname } = useLocation();
   const mainRef = useRef(null);
   const firstRender = useRef(true);
@@ -33,12 +37,31 @@ function MainLayout() {
     document.title = item ? `${item.label} · LifeConsole` : 'Page not found · LifeConsole';
   }, [pathname]);
 
-  // Cmd/Ctrl+K toggles the palette from anywhere in the app.
+  // Every navigation feeds the recency list the palette sorts by.
+  useEffect(() => {
+    rememberSection(pathname);
+  }, [pathname]);
+
+  // Global keys: Cmd/Ctrl+K toggles the palette, '?' opens the shortcut sheet
+  // — but never while the user is typing, where '?' is just punctuation.
   useEffect(() => {
     const onKey = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         setPaletteOpen((open) => !open);
+        return;
+      }
+
+      const target = event.target;
+      const typing =
+        target instanceof HTMLElement &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable);
+
+      if (event.key === '?' && !typing) {
+        event.preventDefault();
+        setHelpOpen((open) => !open);
       }
     };
 
@@ -46,10 +69,10 @@ function MainLayout() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // While an overlay (mobile drawer or palette) is open, the page behind it
-  // must not scroll and Escape must dismiss it.
+  // While an overlay (mobile drawer, palette, shortcut sheet) is open, the
+  // page behind it must not scroll and Escape must dismiss it.
   useEffect(() => {
-    if (!sidebarOpen && !paletteOpen) return undefined;
+    if (!sidebarOpen && !paletteOpen && !helpOpen) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -58,6 +81,7 @@ function MainLayout() {
       if (event.key !== 'Escape') return;
       setSidebarOpen(false);
       setPaletteOpen(false);
+      setHelpOpen(false);
     };
 
     window.addEventListener('keydown', onKey);
@@ -65,14 +89,15 @@ function MainLayout() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKey);
     };
-  }, [sidebarOpen, paletteOpen]);
+  }, [sidebarOpen, paletteOpen, helpOpen]);
 
   return (
     <div className="min-h-screen">
       {/* First tab stop: jumps past the rail straight to page content. */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:border focus:border-white/[0.1] focus:bg-zinc-900 focus:px-4 focus:py-2 focus:text-sm focus:text-zinc-100"
+        style={{ borderColor: 'rgb(var(--accent-rgb) / 0.45)' }}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:border focus:bg-zinc-900 focus:px-4 focus:py-2 focus:text-sm focus:text-zinc-100"
       >
         Skip to main content
       </a>
@@ -80,7 +105,11 @@ function MainLayout() {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="lg:pl-[4.5rem]">
-        <Topbar onMenu={() => setSidebarOpen(true)} onSearch={() => setPaletteOpen(true)} />
+        <Topbar
+          onMenu={() => setSidebarOpen(true)}
+          onSearch={() => setPaletteOpen(true)}
+          onHelp={() => setHelpOpen(true)}
+        />
 
         <motion.main
           key={pathname}
@@ -92,12 +121,16 @@ function MainLayout() {
           transition={{ duration: 0.2, ease: 'easeOut' }}
           className="px-5 py-8 focus:outline-none sm:px-8 sm:py-10"
         >
-          <Outlet />
+          {/* Sections are lazy chunks — the shell never unmounts while one loads. */}
+          <Suspense fallback={<PageFallback />}>
+            <Outlet />
+          </Suspense>
         </motion.main>
       </div>
 
       {/* Mounted only while open — a fresh instance means a fresh query. */}
       {paletteOpen ? <CommandPalette onClose={() => setPaletteOpen(false)} /> : null}
+      {helpOpen ? <ShortcutHelp onClose={() => setHelpOpen(false)} /> : null}
     </div>
   );
 }
