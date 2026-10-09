@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import CommandPalette from '../ui/CommandPalette';
+import ShortcutHelp from '../ui/ShortcutHelp';
 import PageFallback from '../ui/PageFallback';
 import { navItemForPath } from '../navigation/navItems';
 import { rememberSection } from '../../lib/sectionRecents';
@@ -11,6 +12,7 @@ import { rememberSection } from '../../lib/sectionRecents';
 function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const { pathname } = useLocation();
   const mainRef = useRef(null);
   const firstRender = useRef(true);
@@ -40,12 +42,26 @@ function MainLayout() {
     rememberSection(pathname);
   }, [pathname]);
 
-  // Cmd/Ctrl+K toggles the palette from anywhere in the app.
+  // Global keys: Cmd/Ctrl+K toggles the palette, '?' opens the shortcut sheet
+  // — but never while the user is typing, where '?' is just punctuation.
   useEffect(() => {
     const onKey = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         setPaletteOpen((open) => !open);
+        return;
+      }
+
+      const target = event.target;
+      const typing =
+        target instanceof HTMLElement &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable);
+
+      if (event.key === '?' && !typing) {
+        event.preventDefault();
+        setHelpOpen((open) => !open);
       }
     };
 
@@ -53,10 +69,10 @@ function MainLayout() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // While an overlay (mobile drawer or palette) is open, the page behind it
-  // must not scroll and Escape must dismiss it.
+  // While an overlay (mobile drawer, palette, shortcut sheet) is open, the
+  // page behind it must not scroll and Escape must dismiss it.
   useEffect(() => {
-    if (!sidebarOpen && !paletteOpen) return undefined;
+    if (!sidebarOpen && !paletteOpen && !helpOpen) return undefined;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -65,6 +81,7 @@ function MainLayout() {
       if (event.key !== 'Escape') return;
       setSidebarOpen(false);
       setPaletteOpen(false);
+      setHelpOpen(false);
     };
 
     window.addEventListener('keydown', onKey);
@@ -72,7 +89,7 @@ function MainLayout() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKey);
     };
-  }, [sidebarOpen, paletteOpen]);
+  }, [sidebarOpen, paletteOpen, helpOpen]);
 
   return (
     <div className="min-h-screen">
@@ -88,7 +105,11 @@ function MainLayout() {
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="lg:pl-[4.5rem]">
-        <Topbar onMenu={() => setSidebarOpen(true)} onSearch={() => setPaletteOpen(true)} />
+        <Topbar
+          onMenu={() => setSidebarOpen(true)}
+          onSearch={() => setPaletteOpen(true)}
+          onHelp={() => setHelpOpen(true)}
+        />
 
         <motion.main
           key={pathname}
@@ -109,6 +130,7 @@ function MainLayout() {
 
       {/* Mounted only while open — a fresh instance means a fresh query. */}
       {paletteOpen ? <CommandPalette onClose={() => setPaletteOpen(false)} /> : null}
+      {helpOpen ? <ShortcutHelp onClose={() => setHelpOpen(false)} /> : null}
     </div>
   );
 }
