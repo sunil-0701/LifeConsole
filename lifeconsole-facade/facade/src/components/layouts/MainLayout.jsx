@@ -6,6 +6,7 @@ import Topbar from './Topbar';
 import CommandPalette from '../ui/CommandPalette';
 import PageFallback from '../ui/PageFallback';
 import { navItemForPath } from '../navigation/navItems';
+import { rememberSection } from '../../lib/sectionRecents';
 
 function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,6 +33,11 @@ function MainLayout() {
   useEffect(() => {
     const item = navItemForPath(pathname);
     document.title = item ? `${item.label} · LifeConsole` : 'Page not found · LifeConsole';
+  }, [pathname]);
+
+  // Every navigation feeds the recency list the palette sorts by.
+  useEffect(() => {
+    rememberSection(pathname);
   }, [pathname]);
 
   // Cmd/Ctrl+K toggles the palette from anywhere in the app.
