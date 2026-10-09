@@ -39,10 +39,10 @@
 
   body {
     background-color: #09090b;
-    /* Subtle depth: the app's existing violet (focus-ring) color, kept faint. */
+    /* Subtle depth: two faint washes tinted by whatever accent is selected. */
     background-image:
-      radial-gradient(1100px 540px at 10% -10%, rgb(165 180 252 / 0.05), transparent 60%),
-      radial-gradient(900px 480px at 92% -14%, rgb(165 180 252 / 0.035), transparent 55%);
+      radial-gradient(1100px 540px at 10% -10%, rgb(var(--accent-rgb) / 0.05), transparent 60%),
+      radial-gradient(900px 480px at 92% -14%, rgb(var(--accent-rgb) / 0.035), transparent 55%);
     background-attachment: fixed;
     color: #e4e4e7;
     font-family: var(--font-sans);
@@ -53,7 +53,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid rgb(165 180 252 / 0.55);
+    outline: 2px solid rgb(var(--accent-rgb) / 0.55);
     outline-offset: 2px;
   }
 

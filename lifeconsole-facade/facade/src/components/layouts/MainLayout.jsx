@@ -79,7 +79,8 @@ function MainLayout() {
       {/* First tab stop: jumps past the rail straight to page content. */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:border focus:border-white/[0.1] focus:bg-zinc-900 focus:px-4 focus:py-2 focus:text-sm focus:text-zinc-100"
+        style={{ borderColor: 'rgb(var(--accent-rgb) / 0.45)' }}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:border focus:bg-zinc-900 focus:px-4 focus:py-2 focus:text-sm focus:text-zinc-100"
       >
         Skip to main content
       </a>

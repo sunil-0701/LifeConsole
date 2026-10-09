@@ -114,10 +114,15 @@ function CommandPalette({ onClose }) {
                   aria-selected={index === safeActive}
                   onClick={() => run(item)}
                   onMouseEnter={() => setActive(index)}
+                  style={
+                    index === safeActive
+                      ? { backgroundColor: 'rgb(var(--accent-rgb) / 0.14)' }
+                      : undefined
+                  }
                   className={[
                     'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-100',
                     index === safeActive
-                      ? 'bg-white/[0.07] text-white'
+                      ? 'text-white'
                       : 'text-zinc-400 hover:text-zinc-200',
                   ].join(' ')}
                 >
