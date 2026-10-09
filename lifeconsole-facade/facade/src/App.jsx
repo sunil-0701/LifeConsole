@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import MainLayout from './components/layouts/MainLayout';
+import ErrorBoundary from './components/ui/ErrorBoundary';
 import Home from './pages/Home';
 
 // Home stays eager — it is the landing route, and pulling its chunk before
@@ -22,30 +23,33 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
   return (
-    // reducedMotion="user": framer drops transform/layout animation for anyone
-    // who asked the OS for less motion (opacity fades stay, they are harmless).
-    <MotionConfig reducedMotion="user">
-      <BrowserRouter>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="journal" element={<Journal />} />
-            <Route path="tasks" element={<Tasks />} />
-            <Route path="goals" element={<Goals />} />
-            <Route path="finance" element={<Finance />} />
-            <Route path="habits" element={<Habits />} />
-            <Route path="sticky-notes" element={<StickyNotes />} />
-            <Route path="wishlist" element={<Wishlist />} />
-            <Route path="analytics" element={<Analytics />} />
-            <Route path="career" element={<Career />} />
-            <Route path="projects" element={<Projects />} />
-            <Route path="settings" element={<Settings />} />
-            {/* Anything unmatched used to render the shell with an empty body. */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </MotionConfig>
+    // Outermost on purpose: a section that throws — or a chunk that fails to
+    // fetch — should not take the whole console down with it. Inside,
+    // reducedMotion="user" hands framer the OS motion preference.
+    <ErrorBoundary>
+      <MotionConfig reducedMotion="user">
+        <BrowserRouter>
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="journal" element={<Journal />} />
+              <Route path="tasks" element={<Tasks />} />
+              <Route path="goals" element={<Goals />} />
+              <Route path="finance" element={<Finance />} />
+              <Route path="habits" element={<Habits />} />
+              <Route path="sticky-notes" element={<StickyNotes />} />
+              <Route path="wishlist" element={<Wishlist />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="career" element={<Career />} />
+              <Route path="projects" element={<Projects />} />
+              <Route path="settings" element={<Settings />} />
+              {/* Anything unmatched used to render the shell with an empty body. */}
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </MotionConfig>
+    </ErrorBoundary>
   );
 }
 
