@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
@@ -18,6 +18,10 @@ function MainLayout() {
   const firstRender = useRef(true);
   const [announcement, setAnnouncement] = useState('');
   const skipFirstAnnounce = useRef(true);
+
+  // Stable identity: the palette holds this in its command list, and a new
+  // function on every render would rebuild that list for no reason.
+  const openHelp = useCallback(() => setHelpOpen(true), []);
 
   // After navigating, hand focus to the new page and start it at the top —
   // otherwise a keyboard user's focus stays on the sidebar button they just
@@ -149,7 +153,9 @@ function MainLayout() {
       </div>
 
       {/* Mounted only while open — a fresh instance means a fresh query. */}
-      {paletteOpen ? <CommandPalette onClose={() => setPaletteOpen(false)} /> : null}
+      {paletteOpen ? (
+        <CommandPalette onClose={() => setPaletteOpen(false)} onShowHelp={openHelp} />
+      ) : null}
       {helpOpen ? <ShortcutHelp onClose={() => setHelpOpen(false)} /> : null}
     </div>
   );
