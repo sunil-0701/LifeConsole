@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   BarChart3,
@@ -12,8 +12,14 @@ import {
   Wallet,
 } from 'lucide-react';
 import TypedText from '../components/ui/TypedText';
+import TaskRow from '../components/ui/TaskRow';
+import { TASKS_KEY, countOpen, toggleTask } from '../lib/tasks';
+import { useStoredState } from '../lib/useStoredState';
 
 const BOUNDARY_HOURS = [12, 17];
+
+// Module-level so useStoredState captures one stable initial value.
+const NO_TASKS = [];
 
 // Typewriter timing for the hero: one continuous typing pass across the
 // whole line. "Sir." starts the instant the greeting's final character
@@ -95,7 +101,12 @@ function useGreeting() {
 function Home() {
   const greeting = useGreeting();
   const navigate = useNavigate();
+  const [tasks, setTasks] = useStoredState(TASKS_KEY, NO_TASKS);
   const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
+
+  const open = countOpen(tasks);
+  // Newest first, so the three most recent open tasks are the focus list.
+  const focus = tasks.filter((task) => !task.done).slice(0, 3);
 
   return (
     <div>
@@ -162,6 +173,40 @@ function Home() {
             </button>
           ))}
         </div>
+      </section>
+
+      {/* Today's focus: open tasks without leaving the dashboard — ticking
+          one here writes straight back to the shared store. */}
+      <section className="mt-10">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-600 uppercase">
+            Today&rsquo;s focus
+          </h2>
+          <Link
+            to="/tasks"
+            className="text-xs text-zinc-600 transition-colors duration-150 hover:text-zinc-300"
+          >
+            {open > 0 ? `All ${open} open tasks` : 'Open tasks'}
+          </Link>
+        </div>
+
+        {focus.length > 0 ? (
+          <ul className="mt-3 max-w-xl divide-y divide-white/[0.04] border-y border-white/[0.06]">
+            {focus.map((task) => (
+              <TaskRow
+                key={task.id}
+                task={task}
+                onToggle={() => setTasks((current) => toggleTask(current, task.id))}
+              />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 max-w-xl text-sm text-zinc-600">
+            {tasks.length > 0
+              ? 'Everything on the list is done. Add the next thing above.'
+              : 'Nothing open — add a task and it shows up here.'}
+          </p>
+        )}
       </section>
 
       {/* Area overview: one card per section, each deep-linking to it. */}
