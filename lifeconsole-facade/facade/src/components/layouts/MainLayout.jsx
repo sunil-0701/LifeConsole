@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Sidebar from './Sidebar';
@@ -16,6 +16,12 @@ function MainLayout() {
   const { pathname } = useLocation();
   const mainRef = useRef(null);
   const firstRender = useRef(true);
+  const [announcement, setAnnouncement] = useState('');
+  const skipFirstAnnounce = useRef(true);
+
+  // Stable identity: the palette holds this in its command list, and a new
+  // function on every render would rebuild that list for no reason.
+  const openHelp = useCallback(() => setHelpOpen(true), []);
 
   // After navigating, hand focus to the new page and start it at the top —
   // otherwise a keyboard user's focus stays on the sidebar button they just
@@ -40,6 +46,19 @@ function MainLayout() {
   // Every navigation feeds the recency list the palette sorts by.
   useEffect(() => {
     rememberSection(pathname);
+  }, [pathname]);
+
+  // Focus is moved to <main> on navigation, but a screen reader left parked
+  // on the rail would otherwise hear nothing change — this polite region
+  // speaks the section name. The initial page load stays silent.
+  useEffect(() => {
+    if (skipFirstAnnounce.current) {
+      skipFirstAnnounce.current = false;
+      return;
+    }
+
+    const item = navItemForPath(pathname);
+    setAnnouncement(item ? `${item.label} loaded` : 'Page not found');
   }, [pathname]);
 
   // Global keys: Cmd/Ctrl+K toggles the palette, '?' opens the shortcut sheet
@@ -102,6 +121,11 @@ function MainLayout() {
         Skip to main content
       </a>
 
+      {/* Route announcements — visually hidden, but spoken on change. */}
+      <p role="status" aria-live="polite" className="sr-only">
+        {announcement}
+      </p>
+
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="lg:pl-[4.5rem]">
@@ -129,7 +153,9 @@ function MainLayout() {
       </div>
 
       {/* Mounted only while open — a fresh instance means a fresh query. */}
-      {paletteOpen ? <CommandPalette onClose={() => setPaletteOpen(false)} /> : null}
+      {paletteOpen ? (
+        <CommandPalette onClose={() => setPaletteOpen(false)} onShowHelp={openHelp} />
+      ) : null}
       {helpOpen ? <ShortcutHelp onClose={() => setHelpOpen(false)} /> : null}
     </div>
   );

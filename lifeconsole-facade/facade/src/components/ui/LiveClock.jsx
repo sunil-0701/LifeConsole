@@ -18,14 +18,29 @@ function LiveClock() {
     // boundary instead of wherever the component happened to mount — and a tab
     // left open for days never accumulates setInterval drift.
     const schedule = () => {
+      clearTimeout(id);
+      // A hidden tab is frozen entirely: no timer, no re-render, no battery
+      // drain from a dashboard nobody is looking at.
+      if (document.hidden) return;
       id = setTimeout(() => {
         setNow(new Date());
         schedule();
       }, 1000 - (Date.now() % 1000));
     };
 
+    const onVisibility = () => {
+      // Coming back from a background tab jumps to the real time immediately
+      // rather than waiting out the stale second the old timer was aimed at.
+      if (!document.hidden) setNow(new Date());
+      schedule();
+    };
+
     schedule();
-    return () => clearTimeout(id);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      clearTimeout(id);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
   }, []);
 
   return (
