@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { ALL_NAV } from '../navigation/navItems';
+import { prefetchSection } from '../navigation/sectionChunks';
 import { recentSections } from '../../lib/sectionRecents';
 
 // Palette of every unlocked section. Mounted only while open, so query and
@@ -43,6 +44,13 @@ function CommandPalette({ onClose }) {
   }, []);
 
   const safeActive = results.length === 0 ? 0 : Math.min(active, results.length - 1);
+
+  // Warm the chunk for whatever row is highlighted, so pressing Enter (or
+  // clicking) resolves from cache instead of the network.
+  useEffect(() => {
+    const entry = results[safeActive];
+    if (entry) prefetchSection(entry.item.to);
+  }, [results, safeActive]);
 
   const run = (item) => {
     onClose();

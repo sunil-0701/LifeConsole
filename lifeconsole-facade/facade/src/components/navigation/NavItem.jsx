@@ -2,6 +2,7 @@ import { matchPath, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
 import NavTooltip from '../ui/NavTooltip';
+import { prefetchSection } from './sectionChunks';
 
 function NavItem({ to, icon: Icon, label, end = false, locked = false }) {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ function NavItem({ to, icon: Icon, label, end = false, locked = false }) {
       <button
         type="button"
         onClick={() => navigate(to)}
+        onMouseEnter={() => prefetchSection(to)}
+        onFocus={() => prefetchSection(to)}
         aria-label={label}
         aria-current={isActive ? 'page' : undefined}
         style={

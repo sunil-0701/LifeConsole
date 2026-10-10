@@ -3,23 +3,25 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import MainLayout from './components/layouts/MainLayout';
 import ErrorBoundary from './components/ui/ErrorBoundary';
+import { notFoundChunk, sectionChunks } from './components/navigation/sectionChunks';
 import Home from './pages/Home';
 
 // Home stays eager — it is the landing route, and pulling its chunk before
 // first paint keeps the greeting animation immediate. Everything else loads
-// on navigation, so the initial bundle only pays for the shell.
-const Journal = lazy(() => import('./pages/Journal'));
-const Tasks = lazy(() => import('./pages/Tasks'));
-const Goals = lazy(() => import('./pages/Goals'));
-const Finance = lazy(() => import('./pages/Finance'));
-const Habits = lazy(() => import('./pages/Habits'));
-const StickyNotes = lazy(() => import('./pages/StickyNotes'));
-const Wishlist = lazy(() => import('./pages/Wishlist'));
-const Analytics = lazy(() => import('./pages/Analytics'));
-const Career = lazy(() => import('./pages/Career'));
-const Projects = lazy(() => import('./pages/Projects'));
-const Settings = lazy(() => import('./pages/Settings'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+// on navigation through the shared sectionChunks map, so the initial bundle
+// only pays for the shell.
+const Journal = lazy(sectionChunks['/journal']);
+const Tasks = lazy(sectionChunks['/tasks']);
+const Goals = lazy(sectionChunks['/goals']);
+const Finance = lazy(sectionChunks['/finance']);
+const Habits = lazy(sectionChunks['/habits']);
+const StickyNotes = lazy(sectionChunks['/sticky-notes']);
+const Wishlist = lazy(sectionChunks['/wishlist']);
+const Analytics = lazy(sectionChunks['/analytics']);
+const Career = lazy(sectionChunks['/career']);
+const Projects = lazy(sectionChunks['/projects']);
+const Settings = lazy(sectionChunks['/settings']);
+const NotFound = lazy(notFoundChunk);
 
 function App() {
   return (
