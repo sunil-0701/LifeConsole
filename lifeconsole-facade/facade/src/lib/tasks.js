@@ -25,3 +25,7 @@ export function removeTask(tasks, id) {
 export function countOpen(tasks) {
   return tasks.reduce((total, task) => (task.done ? total : total + 1), 0);
 }
+
+export function clearCompleted(tasks) {
+  return tasks.filter((task) => !task.done);
+}
