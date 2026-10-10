@@ -16,6 +16,8 @@ function MainLayout() {
   const { pathname } = useLocation();
   const mainRef = useRef(null);
   const firstRender = useRef(true);
+  const [announcement, setAnnouncement] = useState('');
+  const skipFirstAnnounce = useRef(true);
 
   // After navigating, hand focus to the new page and start it at the top —
   // otherwise a keyboard user's focus stays on the sidebar button they just
@@ -40,6 +42,19 @@ function MainLayout() {
   // Every navigation feeds the recency list the palette sorts by.
   useEffect(() => {
     rememberSection(pathname);
+  }, [pathname]);
+
+  // Focus is moved to <main> on navigation, but a screen reader left parked
+  // on the rail would otherwise hear nothing change — this polite region
+  // speaks the section name. The initial page load stays silent.
+  useEffect(() => {
+    if (skipFirstAnnounce.current) {
+      skipFirstAnnounce.current = false;
+      return;
+    }
+
+    const item = navItemForPath(pathname);
+    setAnnouncement(item ? `${item.label} loaded` : 'Page not found');
   }, [pathname]);
 
   // Global keys: Cmd/Ctrl+K toggles the palette, '?' opens the shortcut sheet
@@ -101,6 +116,11 @@ function MainLayout() {
       >
         Skip to main content
       </a>
+
+      {/* Route announcements — visually hidden, but spoken on change. */}
+      <p role="status" aria-live="polite" className="sr-only">
+        {announcement}
+      </p>
 
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
