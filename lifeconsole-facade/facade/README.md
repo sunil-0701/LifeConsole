@@ -5,8 +5,9 @@ goals, habits, finance and friends-in-progress sections, in one dark,
 keyboard-friendly console.
 
 Right now this is the **facade** — routing, layout, navigation and the shared
-UI pieces are done, appearance is configurable, and the data-backed sections
-still render empty states until the data layer lands.
+UI pieces are done, appearance is configurable, and Tasks is fully working
+against local storage. Every other data-backed section still renders an empty
+state until the data layer reaches it.
 
 ## Stack
 
@@ -18,6 +19,7 @@ still render empty states until the data layer lands.
 | Animation | framer-motion |
 | Icons | lucide-react |
 | Lint | ESLint flat config |
+| Tests | Vitest 5 — node environment, no DOM |
 
 ## Getting started
 
@@ -27,6 +29,7 @@ npm run dev      # http://localhost:5173
 npm run build    # production bundle in dist/
 npm run preview  # serve the built bundle
 npm run lint     # eslint .
+npm run test     # vitest — 30 cases over lib/
 ```
 
 ## Structure
@@ -38,13 +41,20 @@ src/
   lib/
     preferences.js           # accent colour: read/write/apply (localStorage)
     sectionRecents.js        # last-visited sections for the palette (localStorage)
+    suggestions.js           # 404 typo scoring: bounded Levenshtein, best three
+    tasks.js                 # pure task helpers: create, toggle, remove, clear
+    useStoredState.js        # localStorage-backed React state, synced across tabs
+    *.test.js                # vitest specs, one per module
   components/
     layouts/                 # MainLayout (shell), Sidebar (rail + drawer), Topbar
-    navigation/              # NavItem, NavTooltip, navItems.js — the shared nav config
+    navigation/              # navItems.js — the shared nav config; NavItem,
+                             # NavTooltip, sectionChunks.js (lazy loaders + prefetch)
     ui/                      # Avatar, CommandPalette, EmptyState, ErrorBoundary,
                              # LiveClock, PageFallback, PageHeader, ShortcutHelp,
-                             # TypedText
+                             # TaskRow, TypedText
   pages/                     # one file per route (all lazy except Home)
+  test/
+    fakeBrowser.js           # window/document stand-ins for the node test env
 public/
   favicon.svg                # prompt-caret mark
 ```
@@ -58,41 +68,49 @@ knows where you are).
 
 | Path | Section |
 | --- | --- |
-| `/` | Home — greeting hero, quick actions, area cards |
-| `/journal` `/tasks` `/goals` `/finance` `/habits` | the working sections |
+| `/` | Home — greeting hero, quick actions, today's focus, area cards |
+| `/tasks` | the working list: add, complete, filter, clear, delete |
+| `/journal` `/goals` `/finance` `/habits` | the other sections (empty states) |
 | `/sticky-notes` `/wishlist` `/analytics` `/career` `/projects` | the rest |
-| `/settings` | appearance — accent colour (pinned at the bottom of the rail) |
+| `/settings` | appearance and data — accent colour (pinned at the bottom of the rail) |
 | `*` | 404 with closest-section suggestions and a way back |
 
 ## Keyboard
 
 - <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>K</kbd> — command palette: type to
-  filter sections, <kbd>↑</kbd>/<kbd>↓</kbd> to move, <kbd>Enter</kbd> to go.
-  With an empty query, recently visited sections are listed first
+  filter sections and commands, <kbd>↑</kbd>/<kbd>↓</kbd> to move,
+  <kbd>Enter</kbd> to run. With an empty query, recently visited sections are
+  listed first and the commands (shortcut sheet, cycle accent, clear recents)
+  trail the list
 - <kbd>?</kbd> — this list, in-product (also the <kbd>?</kbd> button in the
   topbar)
 - <kbd>Esc</kbd> — dismiss the palette, the shortcut sheet or the mobile
   drawer
 - <kbd>Tab</kbd> from the top — "Skip to main content" jumps past the rail
 
-## Preferences and storage
+## Data and storage
 
-Two keys in `localStorage`, both behind guards so blocked storage never
-throws (private windows, quotas):
+Everything persists in `localStorage`, behind guards so blocked storage never
+throws (private windows, quotas); `useStoredState` adds JSON handling and
+cross-tab sync on top for the pieces that behave like state:
 
 | Key | Holds |
 | --- | --- |
 | `lc:accent` | accent colour id — restored in `main.jsx` before first paint |
 | `lc:recent-sections` | last five section paths, most recent first |
+| `lc:tasks` | the task list — add, complete, filter, delete, clear |
 
-The accent resolves to `--accent-rgb` in `index.css`, which the focus ring,
-background washes, active rail item, palette selection, spinner and skip link
-all read.
+Settings shows the live counts and can clear the recents or wipe all three
+keys behind a confirmation. The accent resolves to `--accent-rgb` in
+`index.css`, which the focus ring, background washes, active rail item,
+palette selection, spinner, task checkboxes and skip link all read.
 
 ## Performance and resilience
 
 - Sections are `React.lazy` chunks behind a `Suspense` boundary inside the
   layout, so the shell never unmounts while a chunk loads; Home stays eager.
+  The loaders all live in `navigation/sectionChunks.js`, which the rail also
+  prefetches on hover and focus and the palette warms for the highlighted row.
 - An `ErrorBoundary` wraps the router: a thrown render error or a failed
   chunk download shows the error text with Try again / Reload instead of a
   white screen.
@@ -107,16 +125,20 @@ all read.
   framer runs with `reducedMotion="user"`, and a media query flattens CSS
   transitions.
 - The top-bar clock is railway time (00–23) and re-arms itself to flip on the
-  second boundary rather than drifting with `setInterval`.
-- Navigating moves focus to the new page's main region and resets scroll.
+  second boundary rather than drifting with `setInterval`; a hidden tab
+  freezes it entirely, with a catch-up on return.
+- Navigating moves focus to the new page's main region, resets scroll, and
+  speaks the section name through a polite live region.
 
 ## Status
 
 - [x] Shell: layout, routing, nav config, 404 with suggestions
 - [x] Command palette with recents, quick actions, area overview
-- [x] Accessibility: skip link, focus hand-off, drawer focus trap, reduced motion
-- [x] Performance: route-level code splitting, top-level error boundary
-- [x] Settings: persisted accent colour, in-product shortcut sheet
-- [ ] Data layer for each section (all currently empty states)
+- [x] Accessibility: skip link, focus hand-off, drawer focus trap, live region, reduced motion
+- [x] Performance: code splitting with chunk prefetch, top-level error boundary, hidden-tab clock
+- [x] Settings: persisted accent colour, shortcut sheet, data counts and wipe
+- [x] Tasks: local-first list (add, complete, filter, clear, delete) plus Home focus
+- [x] Tests: vitest over the pure logic in `lib/`
+- [ ] Remaining sections: journal, goals, finance, habits, sticky notes (empty states)
 - [ ] Gallery and Documents (locked in the rail)
 - [ ] Remaining settings: account, sync, notifications
