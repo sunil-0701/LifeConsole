@@ -73,7 +73,7 @@ function Sidebar({ open, onClose }) {
           <nav
             aria-label="Primary"
             onClick={onClose}
-            className="flex-1 space-y-0.5 overflow-y-auto px-3 pt-4 lg:overflow-visible lg:px-2 lg:pt-5"
+            className="flex-1 space-y-1.5 overflow-y-auto px-3 pt-4 lg:overflow-visible lg:px-2 lg:pt-5"
           >
             {PRIMARY_NAV.map((item) => (
               <NavItem key={item.locked ? item.label : item.to} {...item} />
