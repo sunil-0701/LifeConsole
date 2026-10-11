@@ -16,9 +16,6 @@ function TypedText({ text, delay = 0, speed = 45, className }) {
     let last = 0;
     const start = performance.now();
 
-    // One frame loop on an absolute schedule: cadence stays locked to the
-    // display refresh instead of drifting like a setTimeout chain, and
-    // state updates only fire when a character actually lands.
     const tick = (now) => {
       const elapsed = now - start - delay;
       const index = Math.max(0, Math.min(text.length, Math.floor(elapsed / speed) + 1));
@@ -41,7 +38,6 @@ function TypedText({ text, delay = 0, speed = 45, className }) {
   if (done) {
     content = text;
   } else if (count === 0) {
-    // Reserve the final width before the first character lands.
     content = <span className="invisible">{text}</span>;
   } else {
     content = text.slice(0, count);

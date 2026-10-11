@@ -13,7 +13,6 @@ import {
 } from '../lib/tasks';
 import { useStoredState } from '../lib/useStoredState';
 
-// Module-level so useStoredState captures one stable initial value.
 const NO_TASKS = [];
 
 const FILTERS = [

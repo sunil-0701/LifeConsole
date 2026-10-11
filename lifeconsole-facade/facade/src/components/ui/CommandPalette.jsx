@@ -6,17 +6,11 @@ import { prefetchSection } from '../navigation/sectionChunks';
 import { clearSectionRecents, recentSections } from '../../lib/sectionRecents';
 import { ACCENTS, applyAccent, readAccent, writeAccent } from '../../lib/preferences';
 
-// Palette of every unlocked section plus the utility commands that belong at
-// arm's reach — shortcuts, appearance, storage. Mounted only while open, so
-// query and highlight start fresh every time; opened with Cmd/Ctrl+K or the
-// topbar button, and the input owns the keyboard (arrows, enter, escape).
 function CommandPalette({ onClose, onShowHelp }) {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
-  // Held as state rather than read fresh in the memo, so "clear recents"
-  // can rebuild the list the moment it runs.
   const [recents, setRecents] = useState(() => recentSections());
 
   const cycleAccent = useCallback(() => {
@@ -58,8 +52,6 @@ function CommandPalette({ onClose, onShowHelp }) {
     [onShowHelp, cycleAccent, clearRecents],
   );
 
-  // No query: sections you visited recently float to the top, flagged as
-  // such, with the commands trailing the list. A query filters both lists.
   const results = useMemo(() => {
     const sections = ALL_NAV.filter((item) => item.to && !item.locked);
     const needle = query.trim().toLowerCase();
@@ -106,16 +98,12 @@ function CommandPalette({ onClose, onShowHelp }) {
     return [...recentItems, ...rest, ...actions.map(asAction)];
   }, [query, recents, actions]);
 
-  // Steal focus on mount so typing starts filtering immediately.
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   const safeActive = results.length === 0 ? 0 : Math.min(active, results.length - 1);
 
-  // Warm the chunk for whatever section row is highlighted, so pressing
-  // Enter (or clicking) resolves from cache instead of the network. Command
-  // rows have no chunk and are skipped.
   useEffect(() => {
     const entry = results[safeActive];
     if (entry) prefetchSection(entry.path);

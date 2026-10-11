@@ -7,8 +7,6 @@
     --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-    /* Accent palette: consumed as rgb(var(--accent-rgb) / <alpha>).
-       The default below is violet; data-accent overrides it. */
     --accent-rgb: 165 180 252;
   }
 
@@ -39,7 +37,6 @@
 
   body {
     background-color: #09090b;
-    /* Subtle depth: two faint washes tinted by whatever accent is selected. */
     background-image:
       radial-gradient(1100px 540px at 10% -10%, rgb(var(--accent-rgb) / 0.05), transparent 60%),
       radial-gradient(900px 480px at 92% -14%, rgb(var(--accent-rgb) / 0.035), transparent 55%);
@@ -78,8 +75,6 @@
   }
 }
 
-/* TypedText already skips its typing loop under reduced motion; this covers
-   the CSS-driven half — route fades, the drawer slide, hover transitions. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -19,13 +19,8 @@ function MainLayout() {
   const [announcement, setAnnouncement] = useState('');
   const skipFirstAnnounce = useRef(true);
 
-  // Stable identity: the palette holds this in its command list, and a new
-  // function on every render would rebuild that list for no reason.
   const openHelp = useCallback(() => setHelpOpen(true), []);
 
-  // After navigating, hand focus to the new page and start it at the top —
-  // otherwise a keyboard user's focus stays on the sidebar button they just
-  // pressed, and the viewport keeps the previous page's scroll position.
   useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
@@ -36,21 +31,15 @@ function MainLayout() {
     window.scrollTo({ top: 0 });
   }, [pathname]);
 
-  // The tab label follows the rail: "Tasks · LifeConsole". Unmatched paths
-  // fall through navItemForPath, so the 404 gets its own wording.
   useEffect(() => {
     const item = navItemForPath(pathname);
     document.title = item ? `${item.label} · LifeConsole` : 'Page not found · LifeConsole';
   }, [pathname]);
 
-  // Every navigation feeds the recency list the palette sorts by.
   useEffect(() => {
     rememberSection(pathname);
   }, [pathname]);
 
-  // Focus is moved to <main> on navigation, but a screen reader left parked
-  // on the rail would otherwise hear nothing change — this polite region
-  // speaks the section name. The initial page load stays silent.
   useEffect(() => {
     if (skipFirstAnnounce.current) {
       skipFirstAnnounce.current = false;
@@ -61,8 +50,6 @@ function MainLayout() {
     setAnnouncement(item ? `${item.label} loaded` : 'Page not found');
   }, [pathname]);
 
-  // Global keys: Cmd/Ctrl+K toggles the palette, '?' opens the shortcut sheet
-  // — but never while the user is typing, where '?' is just punctuation.
   useEffect(() => {
     const onKey = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
@@ -88,8 +75,6 @@ function MainLayout() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  // While an overlay (mobile drawer, palette, shortcut sheet) is open, the
-  // page behind it must not scroll and Escape must dismiss it.
   useEffect(() => {
     if (!sidebarOpen && !paletteOpen && !helpOpen) return undefined;
 
@@ -112,7 +97,6 @@ function MainLayout() {
 
   return (
     <div className="min-h-screen">
-      {/* First tab stop: jumps past the rail straight to page content. */}
       <a
         href="#main-content"
         style={{ borderColor: 'rgb(var(--accent-rgb) / 0.45)' }}
@@ -121,7 +105,6 @@ function MainLayout() {
         Skip to main content
       </a>
 
-      {/* Route announcements — visually hidden, but spoken on change. */}
       <p role="status" aria-live="polite" className="sr-only">
         {announcement}
       </p>
@@ -145,14 +128,12 @@ function MainLayout() {
           transition={{ duration: 0.2, ease: 'easeOut' }}
           className="px-5 py-8 focus:outline-none sm:px-8 sm:py-10"
         >
-          {/* Sections are lazy chunks — the shell never unmounts while one loads. */}
           <Suspense fallback={<PageFallback />}>
             <Outlet />
           </Suspense>
         </motion.main>
       </div>
 
-      {/* Mounted only while open — a fresh instance means a fresh query. */}
       {paletteOpen ? (
         <CommandPalette onClose={() => setPaletteOpen(false)} onShowHelp={openHelp} />
       ) : null}

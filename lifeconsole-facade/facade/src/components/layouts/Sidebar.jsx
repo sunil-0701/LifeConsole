@@ -5,9 +5,6 @@ import { PRIMARY_NAV, SETTINGS_NAV } from '../navigation/navItems';
 function Sidebar({ open, onClose }) {
   const asideRef = useRef(null);
 
-  // An open drawer is a modal surface: focus moves into it, Tab and Shift+Tab
-  // cycle through its controls only, and closing it (Escape, scrim, choosing a
-  // section) hands focus back to whatever opened it.
   useEffect(() => {
     if (!open) return undefined;
 
@@ -49,7 +46,6 @@ function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {/* Wordmark pinned above the desktop rail, in the top-left corner */}
       <span className="fixed top-4 left-4 z-40 hidden text-[15px] font-semibold tracking-tight text-zinc-100 lg:block">
         LifeConsole
       </span>

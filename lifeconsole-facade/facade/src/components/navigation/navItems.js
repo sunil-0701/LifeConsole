@@ -14,9 +14,6 @@ import {
   Settings,
 } from 'lucide-react';
 
-// Single source of truth for the shell navigation: which sections exist,
-// what they are called, and which ones are still locked. The sidebar renders
-// it; the command palette and the document title read from it.
 export const PRIMARY_NAV = [
   { to: '/', label: 'Home', icon: Home, end: true },
   { to: '/journal', label: 'Journal', icon: NotebookPen },
@@ -35,8 +32,6 @@ export const SETTINGS_NAV = { to: '/settings', label: 'Settings', icon: Settings
 
 export const ALL_NAV = [...PRIMARY_NAV, SETTINGS_NAV];
 
-// Resolve a pathname to the nav entry that owns it. Unmatched paths (the 404
-// route) return undefined, so callers can fall back themselves.
 export function navItemForPath(pathname) {
   return ALL_NAV.find(
     (item) =>

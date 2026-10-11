@@ -33,7 +33,6 @@ function SettingsPage() {
     try {
       [ACCENT_KEY, RECENTS_KEY, TASKS_KEY].forEach((key) => window.localStorage.removeItem(key));
     } catch {
-      // Storage unreachable — there is nothing left to delete anyway.
     }
     window.location.reload();
   };
@@ -66,8 +65,6 @@ function SettingsPage() {
                   : 'border-white/10 hover:border-white/40',
               ].join(' ')}
             >
-              {/* Coloured by the swatch's own data-accent, so each button
-                  previews its option, not the current one. */}
               <span
                 className="block h-full w-full rounded-full"
                 style={{ backgroundColor: 'rgb(var(--accent-rgb))' }}

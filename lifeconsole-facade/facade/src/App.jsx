@@ -6,10 +6,6 @@ import ErrorBoundary from './components/ui/ErrorBoundary';
 import { notFoundChunk, sectionChunks } from './components/navigation/sectionChunks';
 import Home from './pages/Home';
 
-// Home stays eager — it is the landing route, and pulling its chunk before
-// first paint keeps the greeting animation immediate. Everything else loads
-// on navigation through the shared sectionChunks map, so the initial bundle
-// only pays for the shell.
 const Journal = lazy(sectionChunks['/journal']);
 const Tasks = lazy(sectionChunks['/tasks']);
 const Goals = lazy(sectionChunks['/goals']);
@@ -25,9 +21,6 @@ const NotFound = lazy(notFoundChunk);
 
 function App() {
   return (
-    // Outermost on purpose: a section that throws — or a chunk that fails to
-    // fetch — should not take the whole console down with it. Inside,
-    // reducedMotion="user" hands framer the OS motion preference.
     <ErrorBoundary>
       <MotionConfig reducedMotion="user">
         <BrowserRouter>
@@ -45,7 +38,6 @@ function App() {
               <Route path="career" element={<Career />} />
               <Route path="projects" element={<Projects />} />
               <Route path="settings" element={<Settings />} />
-              {/* Anything unmatched used to render the shell with an empty body. */}
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

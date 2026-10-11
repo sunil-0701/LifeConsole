@@ -1,9 +1,6 @@
 import { Component } from 'react';
 import { RefreshCw, TriangleAlert } from 'lucide-react';
 
-// Catches render crashes anywhere in the tree — including a lazy section
-// chunk that fails to download — and swaps the blank screen for a message,
-// the underlying error, and two ways out.
 class ErrorBoundary extends Component {
   state = { error: null };
 

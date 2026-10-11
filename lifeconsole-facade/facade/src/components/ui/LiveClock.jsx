@@ -5,7 +5,7 @@ const TIME_OPTIONS = {
   hour: '2-digit',
   minute: '2-digit',
   second: '2-digit',
-  hourCycle: 'h23', // railway time — 00–23, no AM/PM
+  hourCycle: 'h23',
 };
 
 function LiveClock() {
@@ -14,13 +14,8 @@ function LiveClock() {
   useEffect(() => {
     let id;
 
-    // Each tick is aimed at the next whole second, so the readout flips on the
-    // boundary instead of wherever the component happened to mount — and a tab
-    // left open for days never accumulates setInterval drift.
     const schedule = () => {
       clearTimeout(id);
-      // A hidden tab is frozen entirely: no timer, no re-render, no battery
-      // drain from a dashboard nobody is looking at.
       if (document.hidden) return;
       id = setTimeout(() => {
         setNow(new Date());
@@ -29,8 +24,6 @@ function LiveClock() {
     };
 
     const onVisibility = () => {
-      // Coming back from a background tab jumps to the real time immediately
-      // rather than waiting out the stale second the old timer was aimed at.
       if (!document.hidden) setNow(new Date());
       schedule();
     };

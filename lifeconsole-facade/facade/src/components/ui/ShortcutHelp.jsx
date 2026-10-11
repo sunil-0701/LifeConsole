@@ -10,8 +10,6 @@ const SHORTCUTS = [
   { keys: ['Tab'], description: 'First stop on a page is skip-to-content' },
 ];
 
-// Reference sheet for the shortcuts MainLayout listens for. Escape is handled
-// by the layout's overlay effect, same as the drawer and the palette.
 function ShortcutHelp({ onClose }) {
   const closeRef = useRef(null);
 

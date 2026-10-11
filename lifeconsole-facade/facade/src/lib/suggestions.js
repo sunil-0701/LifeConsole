@@ -1,7 +1,5 @@
 import { ALL_NAV } from '../components/navigation/navItems';
 
-// Bounded Levenshtein — enough to catch "/stiky-notes" or "/tsaks" without
-// pulling in a fuzzy-match dependency.
 export function editDistance(a, b) {
   let previous = Array.from({ length: b.length + 1 }, (_, index) => index);
 
@@ -20,9 +18,6 @@ export function editDistance(a, b) {
   return previous[b.length];
 }
 
-// Score one path segment against one section label ("Sticky Notes" is
-// normalised to "sticky-notes" first): exact beats prefix beats substring,
-// and anything within a small edit distance is still worth suggesting.
 export function scoreSegment(needle, label) {
   const normalised = label.toLowerCase().replaceAll(/\s+/g, '-');
 
@@ -35,8 +30,6 @@ export function scoreSegment(needle, label) {
   return distance <= budget ? 40 - distance : null;
 }
 
-// Every segment is scored, so "/jornal/entry" still finds Journal — then the
-// best three sections win, deduped by path.
 export function suggestionsFor(pathname) {
   const segments = pathname
     .split('/')

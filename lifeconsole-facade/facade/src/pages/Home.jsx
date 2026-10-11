@@ -18,12 +18,8 @@ import { useStoredState } from '../lib/useStoredState';
 
 const BOUNDARY_HOURS = [12, 17];
 
-// Module-level so useStoredState captures one stable initial value.
 const NO_TASKS = [];
 
-// Typewriter timing for the hero: one continuous typing pass across the
-// whole line. "Sir." starts the instant the greeting's final character
-// lands, +40ms only so the comma always renders first.
 const GREETING_DELAY = 220;
 const TYPE_SPEED = 60;
 const NAME_SPEED = 120;
@@ -50,7 +46,6 @@ function greetingFor(hour) {
   return 'Good evening';
 }
 
-// Milliseconds until the next hour at which the greeting changes.
 function msUntilNextChange(now) {
   const next = new Date(now);
   const boundary = BOUNDARY_HOURS.find((hour) => hour > now.getHours());
@@ -76,7 +71,6 @@ function useGreeting() {
       schedule();
     };
 
-    // One timeout aimed exactly at the next boundary — no interval, no polling.
     const schedule = () => {
       clearTimeout(timer);
       timer = setTimeout(sync, msUntilNextChange(new Date()));
@@ -105,7 +99,6 @@ function Home() {
   const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
 
   const open = countOpen(tasks);
-  // Newest first, so the three most recent open tasks are the focus list.
   const focus = tasks.filter((task) => !task.done).slice(0, 3);
 
   return (
@@ -158,7 +151,6 @@ function Home() {
         </motion.blockquote>
       </section>
 
-      {/* Quick actions: the three things worth one click from anywhere. */}
       <section className="mt-14 border-t border-white/[0.06] pt-6 sm:mt-20">
         <div className="flex flex-wrap gap-2">
           {QUICK_ACTIONS.map((action) => (
@@ -175,8 +167,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Today's focus: open tasks without leaving the dashboard — ticking
-          one here writes straight back to the shared store. */}
       <section className="mt-10">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-600 uppercase">
@@ -209,7 +199,6 @@ function Home() {
         )}
       </section>
 
-      {/* Area overview: one card per section, each deep-linking to it. */}
       <section className="mt-10">
         <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-600 uppercase">Areas</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

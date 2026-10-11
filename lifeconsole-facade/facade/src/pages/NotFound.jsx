@@ -3,8 +3,6 @@ import { Compass } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import { suggestionsFor } from '../lib/suggestions';
 
-// The scoring (normalised labels, bounded edit distance, best-three) lives in
-// lib/suggestions.js, where it is pure and testable.
 
 function NotFound() {
   const { pathname } = useLocation();

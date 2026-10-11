@@ -1,7 +1,3 @@
-// The persistence libraries talk to window.localStorage and applyAccent
-// touches document — neither object exists in the node test environment, so
-// tests install these stand-ins around each case. Every fakeStorage() call
-// returns a fresh map, which keeps tests independent of each other.
 
 export function fakeStorage() {
   const map = new Map();

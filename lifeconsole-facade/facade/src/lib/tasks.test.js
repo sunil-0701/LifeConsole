@@ -23,7 +23,7 @@ describe('toggleTask', () => {
 
     expect(next[1].done).toBe(true);
     expect(next[0].done).toBe(false);
-    expect(tasks[1].done).toBe(false); // original array was not mutated
+    expect(tasks[1].done).toBe(false);
     expect(next).not.toBe(tasks);
   });
 

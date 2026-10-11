@@ -1,8 +1,5 @@
 import { motion } from 'framer-motion';
 
-// x: -4 gives the tooltip its small horizontal slide-in. y stays at -50%
-// in both variants because framer writes the transform inline — Tailwind's
-// -translate-y-1/2 would be overwritten.
 const TOOLTIP_VARIANTS = {
   hidden: { opacity: 0, x: -4, y: '-50%' },
   visible: { opacity: 1, x: 0, y: '-50%' },

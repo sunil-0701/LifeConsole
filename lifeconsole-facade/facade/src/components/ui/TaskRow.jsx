@@ -1,10 +1,5 @@
 import { X } from 'lucide-react';
 
-// One task line: native checkbox tinted by the accent (so "done" and the
-// focus ring agree on colour), the label struck through once completed, and
-// an optional delete affordance — omit `onRemove` for read-only lists.
-// The delete button stays visible rather than hover-revealed: touch devices
-// have no hover, and a task you cannot remove is a bug.
 function TaskRow({ task, onToggle, onRemove }) {
   return (
     <li className="flex items-center gap-3 py-2.5">

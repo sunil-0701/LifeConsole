@@ -18,8 +18,8 @@ describe('scoreSegment', () => {
   });
 
   it('accepts near misses inside the edit budget', () => {
-    expect(scoreSegment('stiky-notes', 'Sticky Notes')).toBe(39); // 40 - 1
-    expect(scoreSegment('tsaks', 'Tasks')).toBe(38); // 40 - 2
+    expect(scoreSegment('stiky-notes', 'Sticky Notes')).toBe(39);
+    expect(scoreSegment('tsaks', 'Tasks')).toBe(38);
   });
 
   it('gives up on unrelated words', () => {

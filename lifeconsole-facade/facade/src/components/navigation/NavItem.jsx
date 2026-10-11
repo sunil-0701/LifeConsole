@@ -8,14 +8,10 @@ function NavItem({ to, icon: Icon, label, end = false, locked = false }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  // Segment-wise match, identical to what NavLink computed — but rendered as
-  // a button, so no href means Chrome shows no "localhost:5173" status chip.
   const isActive = !locked && matchPath({ path: to, end }, pathname) !== null;
 
   if (locked) {
     return (
-      // initial/whileHover variants propagate to NavTooltip through context —
-      // no React state, no re-renders on hover.
       <motion.div initial="hidden" whileHover="visible">
         <span
           aria-disabled="true"

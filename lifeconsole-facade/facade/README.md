@@ -25,38 +25,35 @@ state until the data layer reaches it.
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
-npm run build    # production bundle in dist/
-npm run preview  # serve the built bundle
-npm run lint     # eslint .
-npm run test     # vitest — 30 cases over lib/
+npm run dev
+npm run build
+npm run preview
+npm run lint
+npm run test
 ```
 
 ## Structure
 
 ```
 src/
-  App.jsx                    # lazy route table, wrapped in ErrorBoundary + MotionConfig
-  index.css                  # tailwind import + base layer (fonts, accent, motion)
+  App.jsx
+  index.css
   lib/
-    preferences.js           # accent colour: read/write/apply (localStorage)
-    sectionRecents.js        # last-visited sections for the palette (localStorage)
-    suggestions.js           # 404 typo scoring: bounded Levenshtein, best three
-    tasks.js                 # pure task helpers: create, toggle, remove, clear
-    useStoredState.js        # localStorage-backed React state, synced across tabs
-    *.test.js                # vitest specs, one per module
+    preferences.js
+    sectionRecents.js
+    suggestions.js
+    tasks.js
+    useStoredState.js
+    *.test.js
   components/
-    layouts/                 # MainLayout (shell), Sidebar (rail + drawer), Topbar
-    navigation/              # navItems.js — the shared nav config; NavItem,
-                             # NavTooltip, sectionChunks.js (lazy loaders + prefetch)
-    ui/                      # Avatar, CommandPalette, EmptyState, ErrorBoundary,
-                             # LiveClock, PageFallback, PageHeader, ShortcutHelp,
-                             # TaskRow, TypedText
-  pages/                     # one file per route (all lazy except Home)
+    layouts/
+    navigation/
+    ui/
+  pages/
   test/
-    fakeBrowser.js           # window/document stand-ins for the node test env
+    fakeBrowser.js
 public/
-  favicon.svg                # prompt-caret mark
+  favicon.svg
 ```
 
 `components/navigation/navItems.js` is the single source of truth for which
