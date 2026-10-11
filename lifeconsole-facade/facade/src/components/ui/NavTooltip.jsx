@@ -11,7 +11,7 @@ function NavTooltip({ label }) {
       variants={TOOLTIP_VARIANTS}
       transition={{ duration: 0.15, ease: 'easeOut' }}
       aria-hidden="true"
-      className="pointer-events-none absolute top-1/2 left-full z-50 ml-6 hidden whitespace-nowrap rounded-lg border border-white/[0.08] bg-zinc-900/90 px-2.5 py-1.5 text-xs font-medium text-zinc-200 shadow-[0_10px_30px_rgba(0,0,0,0.35),0_2px_6px_rgba(0,0,0,0.3)] backdrop-blur-md lg:block"
+      className="glass-panel pointer-events-none absolute top-1/2 left-full z-50 ml-6 hidden whitespace-nowrap rounded-lg bg-zinc-900/95 px-2.5 py-1.5 text-xs font-medium text-zinc-200 lg:block"
     >
       {label}
     </motion.span>

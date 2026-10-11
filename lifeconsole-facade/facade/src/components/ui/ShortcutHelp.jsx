@@ -23,14 +23,14 @@ function ShortcutHelp({ onClose }) {
         type="button"
         aria-label="Close shortcuts"
         onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60"
       />
 
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Keyboard shortcuts"
-        className="absolute top-[15vh] left-1/2 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900/95 shadow-[0_24px_60px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+        className="glass-panel glass-overlay absolute top-[15vh] left-1/2 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl"
       >
         <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3.5">
           <Keyboard className="h-4 w-4 text-zinc-500" strokeWidth={1.75} aria-hidden="true" />

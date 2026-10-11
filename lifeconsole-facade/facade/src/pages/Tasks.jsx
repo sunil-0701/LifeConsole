@@ -52,12 +52,12 @@ function Tasks() {
           onChange={(event) => setDraft(event.target.value)}
           placeholder="What needs doing?"
           aria-label="New task"
-          className="h-10 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-3.5 text-sm text-zinc-100 placeholder:text-zinc-600 transition-colors duration-150 hover:border-white/[0.14] focus:outline-none"
+          className="glass-control h-10 w-full rounded-lg px-3.5 text-sm text-zinc-100 placeholder:text-zinc-500"
         />
         <button
           type="submit"
           disabled={draft.trim().length === 0}
-          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.05] px-3.5 text-sm text-zinc-200 transition-colors duration-150 hover:bg-white/[0.09] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white/[0.05] disabled:hover:text-zinc-200"
+          className="glass-control inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-3.5 text-sm text-zinc-200 enabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Plus className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           Add
@@ -73,7 +73,7 @@ function Tasks() {
       ) : (
         <>
           <div
-            className="mt-8 inline-flex rounded-lg border border-white/[0.08] bg-white/[0.02] p-0.5"
+            className="glass-panel mt-8 inline-flex rounded-lg p-1"
             role="group"
             aria-label="Filter tasks"
           >
@@ -119,7 +119,7 @@ function Tasks() {
                 : 'Nothing completed yet.'}
             </p>
           ) : (
-            <ul className="mt-3 max-w-xl divide-y divide-white/[0.04] border-y border-white/[0.06]">
+            <ul className="glass-panel mt-3 max-w-xl divide-y divide-white/[0.05] rounded-xl px-5 py-2">
               {visible.map((task) => (
                 <TaskRow
                   key={task.id}

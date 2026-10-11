@@ -69,7 +69,7 @@ function Sidebar({ open, onClose }) {
           open ? 'translate-x-0' : '-translate-x-full',
         ].join(' ')}
       >
-        <div className="flex h-full flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-md lg:border-0 lg:bg-transparent lg:backdrop-blur-none">
+        <div className="glass-panel flex h-full flex-col rounded-2xl bg-zinc-950/85 lg:bg-zinc-950/45">
           <nav
             aria-label="Primary"
             onClick={onClose}

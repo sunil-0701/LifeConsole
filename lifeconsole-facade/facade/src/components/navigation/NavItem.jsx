@@ -39,8 +39,9 @@ function NavItem({ to, icon: Icon, label, end = false, locked = false }) {
         style={
           isActive
             ? {
-                borderColor: 'rgb(var(--accent-rgb) / 0.28)',
-                backgroundColor: 'rgb(var(--accent-rgb) / 0.10)',
+                borderColor: 'rgb(var(--accent-rgb) / 0.24)',
+                backgroundColor: 'rgb(var(--accent-rgb) / 0.12)',
+                boxShadow: 'inset 0 1px 0 rgb(255 255 255 / 0.06), 0 2px 10px rgb(0 0 0 / 0.12)',
               }
             : undefined
         }
@@ -48,7 +49,7 @@ function NavItem({ to, icon: Icon, label, end = false, locked = false }) {
           'group relative flex w-full items-center gap-3 rounded-lg border px-3 py-2 text-sm transition-colors duration-150 lg:justify-center lg:px-1',
           isActive
             ? 'text-white'
-            : 'border-transparent text-zinc-500 hover:bg-white/[0.03] hover:text-zinc-200',
+            : 'border-transparent text-zinc-500 hover:border-white/[0.07] hover:bg-white/[0.045] hover:text-zinc-200',
         ].join(' ')}
       >
         <Icon

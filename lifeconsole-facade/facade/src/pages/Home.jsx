@@ -141,7 +141,7 @@ function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="max-w-xs font-mono text-[13px] leading-relaxed text-zinc-400 lg:mt-2"
+          className="max-w-xs border-l border-white/[0.1] pl-5 font-mono text-[13px] leading-relaxed text-zinc-400 lg:mt-2"
         >
           <p>
             &ldquo;Discipline is choosing what you want most over what you want
@@ -158,7 +158,7 @@ function Home() {
               key={action.to}
               type="button"
               onClick={() => navigate(action.to)}
-              className="inline-flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3.5 py-2 text-sm text-zinc-300 transition-colors duration-150 hover:bg-white/[0.08] hover:text-white"
+              className="glass-control inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm text-zinc-300 hover:text-white"
             >
               <action.icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
               {action.label}
@@ -169,19 +169,19 @@ function Home() {
 
       <section className="mt-10">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-600 uppercase">
+          <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-500 uppercase">
             Today&rsquo;s focus
           </h2>
           <Link
             to="/tasks"
-            className="text-xs text-zinc-600 transition-colors duration-150 hover:text-zinc-300"
+            className="text-xs text-zinc-500 transition-colors duration-150 hover:text-zinc-300"
           >
             {open > 0 ? `All ${open} open tasks` : 'Open tasks'}
           </Link>
         </div>
 
         {focus.length > 0 ? (
-          <ul className="mt-3 max-w-xl divide-y divide-white/[0.04] border-y border-white/[0.06]">
+          <ul className="glass-panel mt-3 max-w-xl divide-y divide-white/[0.05] rounded-xl px-5 py-2">
             {focus.map((task) => (
               <TaskRow
                 key={task.id}
@@ -191,7 +191,7 @@ function Home() {
             ))}
           </ul>
         ) : (
-          <p className="mt-3 max-w-xl text-sm text-zinc-600">
+          <p className="glass-panel mt-3 max-w-xl rounded-xl p-5 text-sm text-zinc-500">
             {tasks.length > 0
               ? 'Everything on the list is done. Add the next thing above.'
               : 'Nothing open — add a task and it shows up here.'}
@@ -200,24 +200,24 @@ function Home() {
       </section>
 
       <section className="mt-10">
-        <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-600 uppercase">Areas</h2>
+        <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-500 uppercase">Areas</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {AREAS.map((area) => (
             <button
               key={area.to}
               type="button"
               onClick={() => navigate(area.to)}
-              className="group flex flex-col items-start gap-2 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-left transition-colors duration-150 hover:border-white/[0.1] hover:bg-white/[0.05]"
+              className="glass-panel glass-interactive group flex flex-col items-start gap-2 rounded-xl p-5 text-left"
             >
               <area.icon
-                className="h-[18px] w-[18px] text-zinc-500 transition-colors duration-150 group-hover:text-zinc-300"
+                className="mb-1 h-[18px] w-[18px] text-zinc-400 transition-colors duration-150 group-hover:text-[rgb(var(--accent-rgb))]"
                 strokeWidth={1.75}
                 aria-hidden="true"
               />
               <span className="text-sm font-medium text-zinc-300 group-hover:text-white">
                 {area.label}
               </span>
-              <span className="text-xs leading-relaxed text-zinc-600">{area.blurb}</span>
+              <span className="text-xs leading-relaxed text-zinc-500">{area.blurb}</span>
             </button>
           ))}
         </div>

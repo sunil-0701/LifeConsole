@@ -41,9 +41,9 @@ function SettingsPage() {
     <div>
       <PageHeader title="Settings" hint="How LifeConsole behaves for you." />
 
-      <section className="max-w-xl rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
+      <section className="glass-panel max-w-xl rounded-2xl p-6">
         <h2 className="text-base font-medium text-zinc-300">Appearance</h2>
-        <p className="mt-1.5 max-w-md text-sm leading-relaxed text-zinc-600">
+        <p className="mt-1.5 max-w-md text-sm leading-relaxed text-zinc-500">
           The accent tints focus rings, the active rail item and the palette
           selection. Saved on this device — no account needed.
         </p>
@@ -76,9 +76,9 @@ function SettingsPage() {
         </div>
       </section>
 
-      <section className="mt-6 max-w-xl rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
+      <section className="glass-panel mt-6 max-w-xl rounded-2xl p-6">
         <h2 className="text-base font-medium text-zinc-300">Data</h2>
-        <p className="mt-1.5 max-w-md text-sm leading-relaxed text-zinc-600">
+        <p className="mt-1.5 max-w-md text-sm leading-relaxed text-zinc-500">
           Everything LifeConsole remembers lives in this browser&rsquo;s local
           storage — no account, no server, nothing sent anywhere. This is what
           it is holding right now.
@@ -104,7 +104,7 @@ function SettingsPage() {
             type="button"
             onClick={clearRecents}
             disabled={recentCount === 0}
-            className="rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs text-zinc-500 transition-colors duration-150 hover:bg-white/[0.05] hover:text-zinc-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+            className="glass-control rounded-lg px-3 py-1.5 text-xs text-zinc-400 enabled:hover:text-zinc-200 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Clear recent sections
           </button>
