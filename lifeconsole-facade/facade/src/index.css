@@ -92,7 +92,8 @@
     transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
   }
 
-  .glass-control:enabled:hover {
+  .glass-control:enabled:hover,
+  .glass-control:enabled:focus-visible {
     border-color: rgb(255 255 255 / 0.18);
     background-color: rgb(255 255 255 / 0.065);
   }
@@ -101,7 +102,8 @@
     transition: border-color 200ms ease, background-color 200ms ease;
   }
 
-  .glass-interactive:hover {
+  .glass-interactive:hover,
+  .glass-interactive:focus-visible {
     border-color: rgb(var(--accent-rgb) / 0.23);
     background-color: rgb(24 24 29 / 0.72);
   }
