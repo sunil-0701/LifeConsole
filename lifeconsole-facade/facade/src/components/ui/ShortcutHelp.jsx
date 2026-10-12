@@ -30,7 +30,7 @@ function ShortcutHelp({ onClose }) {
         role="dialog"
         aria-modal="true"
         aria-label="Keyboard shortcuts"
-        className="glass-panel glass-overlay absolute top-[15vh] left-1/2 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl"
+        className="glass-panel glass-overlay absolute top-[15vh] left-1/2 max-h-[75dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-y-auto overscroll-contain rounded-2xl"
       >
         <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3.5">
           <Keyboard className="h-4 w-4 text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
