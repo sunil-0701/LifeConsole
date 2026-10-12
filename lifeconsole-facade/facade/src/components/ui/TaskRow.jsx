@@ -2,19 +2,19 @@ import { X } from 'lucide-react';
 
 function TaskRow({ task, onToggle, onRemove }) {
   return (
-    <li className="flex items-center gap-3 py-2.5">
+    <li className="flex items-start gap-3 py-2.5">
       <input
         type="checkbox"
         checked={task.done}
         onChange={onToggle}
         aria-label={`Mark “${task.text}” as ${task.done ? 'not done' : 'done'}`}
-        className="h-4 w-4 shrink-0 cursor-pointer rounded border-white/20"
+        className="mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-white/20"
         style={{ accentColor: 'rgb(var(--accent-rgb))' }}
       />
 
       <span
         className={[
-          'min-w-0 flex-1 truncate text-sm',
+          'min-w-0 flex-1 text-sm leading-relaxed [overflow-wrap:anywhere]',
           task.done ? 'text-zinc-600 line-through' : 'text-zinc-300',
         ].join(' ')}
       >
