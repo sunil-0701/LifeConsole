@@ -54,8 +54,8 @@ function NavItem({ to, icon: Icon, label, end = false, locked = false }) {
       >
         <Icon
           className={[
-            'h-[18px] w-[18px] transition-colors duration-150',
-            isActive ? 'text-zinc-200' : 'text-zinc-600 group-hover:text-zinc-400',
+            'h-[18px] w-[18px] shrink-0 transition-colors duration-150',
+            isActive ? 'text-zinc-200' : 'text-zinc-600 group-hover:text-zinc-400 group-focus-visible:text-zinc-400',
           ].join(' ')}
           strokeWidth={1.75}
           aria-hidden="true"
