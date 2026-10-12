@@ -52,7 +52,7 @@ function Tasks() {
           onChange={(event) => setDraft(event.target.value)}
           placeholder="What needs doing?"
           aria-label="New task"
-          className="glass-control h-10 w-full rounded-lg px-3.5 text-sm text-zinc-100 placeholder:text-zinc-500"
+          className="glass-control h-10 min-w-0 w-full rounded-lg px-3.5 text-sm text-zinc-100 placeholder:text-zinc-500"
         />
         <button
           type="submit"
@@ -89,7 +89,7 @@ function Tasks() {
                     : undefined
                 }
                 className={[
-                  'rounded-md px-3 py-1.5 text-xs transition-colors duration-150',
+                  'min-h-8 rounded-md px-3 py-1.5 text-xs transition-colors duration-150',
                   filter === option.id ? 'text-white' : 'text-zinc-500 hover:text-zinc-300',
                 ].join(' ')}
               >
