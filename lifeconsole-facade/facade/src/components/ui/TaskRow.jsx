@@ -26,7 +26,7 @@ function TaskRow({ task, onToggle, onRemove }) {
           type="button"
           onClick={onRemove}
           aria-label={`Delete “${task.text}”`}
-          className="grid h-6 w-6 shrink-0 place-items-center rounded text-zinc-600 transition-colors duration-150 hover:bg-white/[0.06] hover:text-zinc-300"
+          className="-my-1 grid h-8 w-8 shrink-0 place-items-center rounded text-zinc-600 transition-colors duration-150 hover:bg-white/[0.06] hover:text-zinc-300 focus-visible:bg-white/[0.06] focus-visible:text-zinc-300"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
         </button>
