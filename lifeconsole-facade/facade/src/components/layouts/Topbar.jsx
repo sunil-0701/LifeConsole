@@ -4,7 +4,7 @@ import Avatar from '../ui/Avatar';
 
 function Topbar({ onMenu, onSearch, onHelp }) {
   return (
-    <header className="glass-chrome flex h-16 items-center gap-4 px-5 sm:px-8">
+    <header className="glass-chrome flex min-h-16 flex-wrap items-center gap-x-4 gap-y-2 px-5 py-3 sm:px-8 lg:h-16 lg:flex-nowrap lg:py-0">
       <button
         type="button"
         onClick={onMenu}
@@ -14,11 +14,11 @@ function Topbar({ onMenu, onSearch, onHelp }) {
         <Menu className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
       </button>
 
-      <span className="text-[15px] font-semibold tracking-tight text-zinc-100 lg:hidden">
+      <span className="shrink-0 text-[15px] font-semibold tracking-tight text-zinc-100 lg:hidden">
         LifeConsole
       </span>
 
-      <div className="ml-auto flex items-center gap-3 sm:gap-5">
+      <div className="ml-auto flex shrink-0 items-center gap-3 sm:gap-5">
         <button
           type="button"
           onClick={onHelp}
@@ -32,7 +32,7 @@ function Topbar({ onMenu, onSearch, onHelp }) {
           type="button"
           onClick={onSearch}
           aria-label="Search sections"
-          className="glass-control flex h-9 items-center gap-2 rounded-lg px-3 text-sm text-zinc-400 hover:text-zinc-100"
+          className="glass-control flex h-9 shrink-0 items-center gap-2 rounded-lg px-3 text-sm text-zinc-400 hover:text-zinc-100"
         >
           <Search className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           <span className="hidden sm:inline">Search</span>
