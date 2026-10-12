@@ -48,7 +48,7 @@ function SettingsPage() {
           selection. Saved on this device — no account needed.
         </p>
 
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           {ACCENTS.map((option) => (
             <button
               key={option.id}
@@ -59,7 +59,7 @@ function SettingsPage() {
               aria-label={`${option.label} accent`}
               title={option.label}
               className={[
-                'h-8 w-8 rounded-full border-2 p-[3px] transition-colors duration-150',
+                'h-8 w-8 shrink-0 rounded-full border-2 p-[3px] transition-colors duration-150',
                 accent === option.id
                   ? 'border-white/70'
                   : 'border-white/10 hover:border-white/40',
@@ -72,7 +72,7 @@ function SettingsPage() {
             </button>
           ))}
 
-          <span className="ml-1 font-mono text-xs text-zinc-600">{current.label}</span>
+          <span className="ml-1 whitespace-nowrap font-mono text-xs text-zinc-600">{current.label}</span>
         </div>
       </section>
 
