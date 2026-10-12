@@ -194,14 +194,14 @@ function CommandPalette({ onClose, onShowHelp }) {
                 >
                   <entry.icon
                     className={[
-                      'h-4 w-4',
+                      'h-4 w-4 shrink-0',
                       index === safeActive ? 'text-zinc-200' : 'text-zinc-600',
                     ].join(' ')}
                     strokeWidth={1.75}
                     aria-hidden="true"
                   />
-                  <span className="font-medium">{entry.label}</span>
-                  <span className="ml-auto flex items-center gap-2">
+                  <span className="min-w-0 flex-1 truncate font-medium">{entry.label}</span>
+                  <span className="ml-auto flex shrink-0 items-center gap-2 whitespace-nowrap">
                     {entry.recent ? (
                       <span className="font-mono text-[10px] tracking-wider text-zinc-600 uppercase">
                         recent
