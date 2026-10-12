@@ -168,13 +168,13 @@ function Home() {
       </section>
 
       <section className="mt-10">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex max-w-xl flex-wrap items-center justify-between gap-3">
           <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-500 uppercase">
             Today&rsquo;s focus
           </h2>
           <Link
             to="/tasks"
-            className="text-xs text-zinc-500 transition-colors duration-150 hover:text-zinc-300"
+            className="whitespace-nowrap text-xs tabular-nums text-zinc-500 transition-colors duration-150 hover:text-zinc-300"
           >
             {open > 0 ? `All ${open} open tasks` : 'Open tasks'}
           </Link>
