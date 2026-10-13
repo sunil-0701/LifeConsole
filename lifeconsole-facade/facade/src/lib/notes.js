@@ -39,3 +39,13 @@ export function editNote(notes, id, text) {
     ? { ...note, text: trimmed, updatedAt: Date.now() }
     : note);
 }
+
+export function toggleNotePin(notes, id) {
+  return notes.map((note) => note.id === id ? { ...note, pinned: !note.pinned } : note);
+}
+
+export function sortNotes(notes) {
+  return [...notes].sort((a, b) =>
+    Number(b.pinned) - Number(a.pinned) || b.updatedAt - a.updatedAt ||
+    b.createdAt - a.createdAt || a.id.localeCompare(b.id));
+}

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Pin, Trash2 } from 'lucide-react';
 
-function NoteCard({ note, onRemove, onEdit }) {
+function NoteCard({ note, onRemove, onEdit, onPin }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const editButtonRef = useRef(null);
@@ -20,6 +20,7 @@ function NoteCard({ note, onRemove, onEdit }) {
 
   return (
     <li className="glass-panel min-w-0 rounded-xl p-5">
+      {note.pinned ? <p className="mb-3 font-mono text-[10px] tracking-wider text-[rgb(var(--accent-rgb))] uppercase">Pinned</p> : null}
       {editing ? (
         <form onSubmit={save} onKeyDown={(event) => {
           if (event.key === 'Escape') {
@@ -46,11 +47,20 @@ function NoteCard({ note, onRemove, onEdit }) {
           {note.text}
         </p>
       )}
-      <div className="mt-4 flex items-center justify-between gap-3">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <time dateTime={new Date(note.updatedAt).toISOString()} className="text-xs text-zinc-500">
           {new Date(note.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
         </time>
         <div className="flex shrink-0 gap-2">
+          <button
+            type="button"
+            onClick={onPin}
+            aria-pressed={note.pinned}
+            aria-label={`Pin note: ${note.text.slice(0, 60)}`}
+            className={`glass-control grid h-9 w-9 place-items-center rounded-lg ${note.pinned ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-500 hover:text-zinc-200'}`}
+          >
+            <Pin className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+          </button>
           <button
             ref={editButtonRef}
             type="button"

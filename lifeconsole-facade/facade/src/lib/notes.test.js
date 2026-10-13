@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { createNote, editNote, normalizeNotes, removeNote } from './notes';
+import { createNote, editNote, normalizeNotes, removeNote, sortNotes, toggleNotePin } from './notes';
 
 afterEach(() => vi.useRealTimers());
 
@@ -64,5 +64,31 @@ describe('editNote', () => {
 
   it('does not recreate notes deleted in another tab', () => {
     expect(editNote([], 'deleted', 'text')).toEqual([]);
+  });
+});
+
+describe('pinned note ordering', () => {
+  it('toggles only the target pin without changing its edit time', () => {
+    const notes = [createNote('one'), createNote('two')];
+    const pinned = toggleNotePin(notes, notes[0].id);
+    expect(pinned[0]).toEqual({ ...notes[0], pinned: true });
+    expect(pinned[1]).toBe(notes[1]);
+    expect(toggleNotePin(pinned, notes[0].id)).toEqual(notes);
+    expect(notes[0].pinned).toBe(false);
+  });
+
+  it('puts pinned notes before newer unpinned notes without mutating the list', () => {
+    const older = { ...createNote('older'), updatedAt: 10, pinned: true };
+    const newer = { ...createNote('newer'), updatedAt: 20 };
+    const newest = { ...createNote('newest'), updatedAt: 30 };
+    const notes = [newer, newest, older];
+    expect(sortNotes(notes)).toEqual([older, newest, newer]);
+    expect(notes).toEqual([newer, newest, older]);
+  });
+
+  it('breaks timestamp ties deterministically', () => {
+    const a = { ...createNote('a'), id: 'a', updatedAt: 10, createdAt: 10 };
+    const b = { ...a, id: 'b' };
+    expect(sortNotes([b, a])).toEqual([a, b]);
   });
 });
