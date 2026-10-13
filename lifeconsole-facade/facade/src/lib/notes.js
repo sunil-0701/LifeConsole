@@ -1,0 +1,33 @@
+export const NOTES_KEY = 'lc:notes';
+
+export function normalizeNotes(value) {
+  if (!Array.isArray(value)) return [];
+  const ids = new Set();
+  return value.filter((note) => {
+    if (
+      !note || typeof note.id !== 'string' || !note.id || ids.has(note.id) ||
+      typeof note.text !== 'string' || !note.text.trim() ||
+      !Number.isFinite(note.createdAt) || !Number.isFinite(note.updatedAt) ||
+      typeof note.pinned !== 'boolean'
+    ) return false;
+    ids.add(note.id);
+    return true;
+  });
+}
+
+export function createNote(text) {
+  const trimmed = text.trim();
+  if (!trimmed) return null;
+  const now = Date.now();
+  return {
+    id: crypto.randomUUID(),
+    text: trimmed,
+    pinned: false,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export function removeNote(notes, id) {
+  return notes.filter((note) => note.id !== id);
+}
