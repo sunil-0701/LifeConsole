@@ -31,3 +31,11 @@ export function createNote(text) {
 export function removeNote(notes, id) {
   return notes.filter((note) => note.id !== id);
 }
+
+export function editNote(notes, id, text) {
+  const trimmed = text.trim();
+  if (!trimmed) return notes;
+  return notes.map((note) => note.id === id && note.text !== trimmed
+    ? { ...note, text: trimmed, updatedAt: Date.now() }
+    : note);
+}

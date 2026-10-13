@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { createNote, normalizeNotes, removeNote } from './notes';
+import { createNote, editNote, normalizeNotes, removeNote } from './notes';
 
 afterEach(() => vi.useRealTimers());
 
@@ -42,5 +42,27 @@ describe('removeNote', () => {
     expect(removeNote(notes, notes[0].id)).toEqual([notes[1]]);
     expect(notes).toHaveLength(2);
     expect(removeNote(notes, 'missing')).toEqual(notes);
+  });
+});
+
+describe('editNote', () => {
+  it('updates only the target and keeps its id and creation time', () => {
+    vi.useFakeTimers();
+    const notes = [createNote('one'), createNote('two')];
+    vi.advanceTimersByTime(1000);
+    const next = editNote(notes, notes[0].id, '  revised\ntext ');
+    expect(next[0]).toEqual({ ...notes[0], text: 'revised\ntext', updatedAt: Date.now() });
+    expect(next[1]).toBe(notes[1]);
+    expect(notes[0].text).toBe('one');
+  });
+
+  it('refuses blank edits and does not change timestamps for identical text', () => {
+    const notes = [createNote('one')];
+    expect(editNote(notes, notes[0].id, ' ')).toBe(notes);
+    expect(editNote(notes, notes[0].id, ' one ')[0]).toBe(notes[0]);
+  });
+
+  it('does not recreate notes deleted in another tab', () => {
+    expect(editNote([], 'deleted', 'text')).toEqual([]);
   });
 });

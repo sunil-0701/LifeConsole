@@ -3,7 +3,7 @@ import { Plus, StickyNote } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
 import NoteCard from '../components/ui/NoteCard';
-import { createNote, removeNote } from '../lib/notes';
+import { createNote, editNote, removeNote } from '../lib/notes';
 import { useNotes } from '../lib/useNotes';
 
 function StickyNotes() {
@@ -58,7 +58,17 @@ function StickyNotes() {
         <>
           <p className="mt-8 font-mono text-xs text-zinc-500">{notes.length} {notes.length === 1 ? 'note' : 'notes'}</p>
           <ul className="mt-3 grid max-w-5xl items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {notes.map((note) => <NoteCard key={note.id} note={note} onRemove={() => deleteNote(note.id)} />)}
+            {notes.map((note) => (
+              <NoteCard
+                key={note.id}
+                note={note}
+                onRemove={() => deleteNote(note.id)}
+                onEdit={(text) => {
+                  setNotes((current) => editNote(current, note.id, text));
+                  setStatus('Note updated.');
+                }}
+              />
+            ))}
           </ul>
         </>
       )}
