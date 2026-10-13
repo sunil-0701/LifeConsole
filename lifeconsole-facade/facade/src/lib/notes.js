@@ -49,3 +49,9 @@ export function sortNotes(notes) {
     Number(b.pinned) - Number(a.pinned) || b.updatedAt - a.updatedAt ||
     b.createdAt - a.createdAt || a.id.localeCompare(b.id));
 }
+
+export function findNotes(notes, query = '', pinnedOnly = false) {
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return sortNotes(notes.filter((note) =>
+    (!pinnedOnly || note.pinned) && terms.every((term) => note.text.toLowerCase().includes(term))));
+}

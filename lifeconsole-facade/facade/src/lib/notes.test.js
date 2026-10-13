@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, afterEach } from 'vitest';
-import { createNote, editNote, normalizeNotes, removeNote, sortNotes, toggleNotePin } from './notes';
+import { createNote, editNote, findNotes, normalizeNotes, removeNote, sortNotes, toggleNotePin } from './notes';
 
 afterEach(() => vi.useRealTimers());
 
@@ -90,5 +90,29 @@ describe('pinned note ordering', () => {
     const a = { ...createNote('a'), id: 'a', updatedAt: 10, createdAt: 10 };
     const b = { ...a, id: 'b' };
     expect(sortNotes([b, a])).toEqual([a, b]);
+  });
+});
+
+describe('findNotes', () => {
+  const notes = [
+    { ...createNote('Bring coffee\nand milk'), pinned: true },
+    createNote('Coffee with a friend'),
+    createNote('Read a book'),
+  ];
+
+  it('matches all terms case-insensitively across line breaks', () => {
+    expect(findNotes(notes, ' MILK  coffee ')).toEqual([notes[0]]);
+    expect(findNotes(notes, 'coffee')).toHaveLength(2);
+    expect(findNotes(notes, 'coffee book')).toEqual([]);
+  });
+
+  it('combines text search with pinned-only filtering', () => {
+    expect(findNotes(notes, 'coffee', true)).toEqual([notes[0]]);
+    expect(findNotes(notes, 'book', true)).toEqual([]);
+  });
+
+  it('treats whitespace as no query and retains board order', () => {
+    expect(findNotes(notes, ' \n ')).toEqual(sortNotes(notes));
+    expect(findNotes([])).toEqual([]);
   });
 });
