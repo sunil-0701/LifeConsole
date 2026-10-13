@@ -14,6 +14,8 @@ import {
 import TypedText from '../components/ui/TypedText';
 import TaskRow from '../components/ui/TaskRow';
 import { TASKS_KEY, countOpen, toggleTask } from '../lib/tasks';
+import { sortNotes } from '../lib/notes';
+import { useNotes } from '../lib/useNotes';
 import { useStoredState } from '../lib/useStoredState';
 
 const BOUNDARY_HOURS = [12, 17];
@@ -96,10 +98,12 @@ function Home() {
   const greeting = useGreeting();
   const navigate = useNavigate();
   const [tasks, setTasks] = useStoredState(TASKS_KEY, NO_TASKS);
+  const [notes] = useNotes();
   const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
 
   const open = countOpen(tasks);
   const focus = tasks.filter((task) => !task.done).slice(0, 3);
+  const reminders = sortNotes(notes).slice(0, 3);
 
   return (
     <div>
@@ -195,6 +199,33 @@ function Home() {
             {tasks.length > 0
               ? 'Everything on the list is done. Add the next thing above.'
               : 'Nothing open — add a task and it shows up here.'}
+          </p>
+        )}
+      </section>
+
+      <section className="mt-10">
+        <div className="flex max-w-5xl flex-wrap items-center justify-between gap-3">
+          <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-500 uppercase">Notes at a glance</h2>
+          <Link to="/sticky-notes" className="text-xs text-zinc-500 hover:text-zinc-300">
+            {notes.length ? `All ${notes.length} notes` : 'Add a note'}
+          </Link>
+        </div>
+        {reminders.length ? (
+          <ul className="mt-3 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {reminders.map((note) => (
+              <li key={note.id} className="min-w-0">
+                <Link to="/sticky-notes" className="glass-panel glass-interactive block h-full rounded-xl p-5">
+                  <span className="mb-2 block font-mono text-[10px] tracking-wider text-zinc-500 uppercase">
+                    {note.pinned ? 'Pinned reminder' : 'Recent note'}
+                  </span>
+                  <p className="line-clamp-3 whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-300 [overflow-wrap:anywhere]">{note.text}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="glass-panel mt-3 max-w-xl rounded-xl p-5 text-sm text-zinc-500">
+            Capture a thought with New note above. Pinned reminders will appear here first.
           </p>
         )}
       </section>
