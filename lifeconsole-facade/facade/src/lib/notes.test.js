@@ -34,6 +34,15 @@ describe('normalizeNotes', () => {
       { ...note, id: 'bad-pin', pinned: 'yes' },
     ])).toEqual([note]);
   });
+
+  it('rejects finite timestamps outside the Date range before cards format them', () => {
+    const note = createNote('valid');
+    expect(normalizeNotes([
+      { ...note, id: 'overflow', updatedAt: Number.MAX_VALUE },
+      { ...note, id: 'underflow', createdAt: -Number.MAX_VALUE },
+      note,
+    ])).toEqual([note]);
+  });
 });
 
 describe('removeNote', () => {

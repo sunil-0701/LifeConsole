@@ -7,7 +7,8 @@ export function normalizeNotes(value) {
     if (
       !note || typeof note.id !== 'string' || !note.id || ids.has(note.id) ||
       typeof note.text !== 'string' || !note.text.trim() ||
-      !Number.isFinite(note.createdAt) || !Number.isFinite(note.updatedAt) ||
+      !Number.isFinite(note.createdAt) || Math.abs(note.createdAt) > 8640000000000000 ||
+      !Number.isFinite(note.updatedAt) || Math.abs(note.updatedAt) > 8640000000000000 ||
       typeof note.pinned !== 'boolean'
     ) return false;
     ids.add(note.id);
