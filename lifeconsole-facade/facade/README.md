@@ -5,9 +5,9 @@ goals, habits, finance and friends-in-progress sections, in one dark,
 keyboard-friendly console.
 
 Right now this is the **facade** — routing, layout, navigation and the shared
-UI pieces are done, appearance is configurable, and Tasks is fully working
-against local storage. Every other data-backed section still renders an empty
-state until the data layer reaches it.
+UI pieces are done, appearance is configurable, and Tasks and Sticky Notes
+work against local storage. Other data-backed sections still render empty
+states until the data layer reaches them.
 
 ## Stack
 
@@ -39,11 +39,14 @@ src/
   App.jsx
   index.css
   lib/
+    localData.js
+    notes.js
     preferences.js
     sectionRecents.js
     suggestions.js
     tasks.js
     useStoredState.js
+    useNotes.js
     *.test.js
   components/
     layouts/
@@ -65,10 +68,11 @@ knows where you are).
 
 | Path | Section |
 | --- | --- |
-| `/` | Home — greeting hero, quick actions, today's focus, area cards |
+| `/` | Home — greeting hero, quick actions, today's focus, note previews, area cards |
 | `/tasks` | the working list: add, complete, filter, clear, delete |
+| `/sticky-notes` | local note board: create, edit, pin, search, delete |
 | `/journal` `/goals` `/finance` `/habits` | the other sections (empty states) |
-| `/sticky-notes` `/wishlist` `/analytics` `/career` `/projects` | the rest |
+| `/wishlist` `/analytics` `/career` `/projects` | the rest (empty states) |
 | `/settings` | appearance and data — accent colour (pinned at the bottom of the rail) |
 | `*` | 404 with closest-section suggestions and a way back |
 
@@ -96,11 +100,51 @@ cross-tab sync on top for the pieces that behave like state:
 | `lc:accent` | accent colour id — restored in `main.jsx` before first paint |
 | `lc:recent-sections` | last five section paths, most recent first |
 | `lc:tasks` | the task list — add, complete, filter, delete, clear |
+| `lc:notes` | multiline notes, pin state, creation and edit timestamps |
 
-Settings shows the live counts and can clear the recents or wipe all three
-keys behind a confirmation. The accent resolves to `--accent-rgb` in
+Settings shows the live counts and can clear the recents or wipe all four
+keys behind a confirmation. The reset only removes LifeConsole's keys, leaves
+unrelated browser data alone and reports storage-access failures without
+pretending the reset succeeded. The accent resolves to `--accent-rgb` in
 `index.css`, which the focus ring, background washes, active rail item,
 palette selection, spinner, task checkboxes and skip link all read.
+
+### Sticky Notes
+
+- Add a multiline note (up to 5,000 characters) with **Add note**. Blank text
+  is rejected and the composer regains focus after submission.
+- **Edit** opens an inline draft. **Save** commits it; **Cancel** or
+  <kbd>Esc</kbd> discards it and returns focus to the edit button.
+- Pin reminders to keep them above unpinned notes. Within each group, the
+  most recently edited notes come first. Pinning does not change the edit date.
+- Search matches every whitespace-separated term, ignoring case and looking
+  across line breaks. **Pinned only** combines with the text query; **Clear
+  filters** recovers from an empty result.
+- Home previews up to three notes in the same pinned-first order.
+- Deleting a note is immediate and permanent; there is no undo or backup yet.
+
+`useNotes` filters malformed stored rows, duplicate ids and invalid timestamps
+before any consumer renders them. Notes update across same-origin browser tabs
+through the storage event. This is not account sync: simultaneous edits remain
+last-write-wins. If storage is blocked or full, changes may only survive in
+memory until the page reloads; they are not uploaded or backed up elsewhere.
+
+## Verification
+
+Run `npm run lint`, `npm run test` and `npm run build` before committing.
+The node-based Vitest suite covers note validation, immutable edits, pin
+ordering, search and safe local-data reset alongside the existing logic tests.
+It does not exercise React interactions in a browser.
+
+Manual smoke checklist for `/sticky-notes`:
+
+1. Add multiline text, reload and check it survives.
+2. Save an edit; cancel another with Escape and check the saved text is unchanged.
+3. Pin an older note and verify it leads both the board and Home previews.
+4. Combine search and pinned-only filtering, then recover with Clear filters.
+5. Open a second tab and check add/edit/delete changes propagate.
+6. Check narrow-screen wrapping, keyboard controls and focus after Save/Cancel.
+7. Verify Settings counts notes and that cancelling the reset leaves data intact.
 
 ## Performance and resilience
 
@@ -135,7 +179,8 @@ palette selection, spinner, task checkboxes and skip link all read.
 - [x] Performance: code splitting with chunk prefetch, top-level error boundary, hidden-tab clock
 - [x] Settings: persisted accent colour, shortcut sheet, data counts and wipe
 - [x] Tasks: local-first list (add, complete, filter, clear, delete) plus Home focus
+- [x] Sticky Notes: local-first board, editing, pinning, search and Home previews
 - [x] Tests: vitest over the pure logic in `lib/`
-- [ ] Remaining sections: journal, goals, finance, habits, sticky notes (empty states)
+- [ ] Remaining sections: journal, goals, finance, habits, wishlist, analytics, career, projects (empty states)
 - [ ] Gallery and Documents (locked in the rail)
 - [ ] Remaining settings: account, sync, notifications
