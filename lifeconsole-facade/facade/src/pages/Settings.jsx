@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import PageHeader from '../components/ui/PageHeader';
-import { ACCENTS, ACCENT_KEY, applyAccent, readAccent, writeAccent } from '../lib/preferences';
-import { RECENTS_KEY, clearSectionRecents, recentSections } from '../lib/sectionRecents';
+import { ACCENTS, applyAccent, readAccent, writeAccent } from '../lib/preferences';
+import { clearSectionRecents, recentSections } from '../lib/sectionRecents';
 import { TASKS_KEY } from '../lib/tasks';
 import { useStoredState } from '../lib/useStoredState';
+import { useNotes } from '../lib/useNotes';
+import { clearLocalData } from '../lib/localData';
 
 const NO_TASKS = [];
 
@@ -11,6 +13,8 @@ function SettingsPage() {
   const [accent, setAccent] = useState(readAccent);
   const [recentCount, setRecentCount] = useState(() => recentSections().length);
   const [tasks] = useStoredState(TASKS_KEY, NO_TASKS);
+  const [notes] = useNotes();
+  const [dataError, setDataError] = useState('');
   const current = ACCENTS.find((option) => option.id === accent) ?? ACCENTS[0];
 
   const select = (id) => {
@@ -26,13 +30,13 @@ function SettingsPage() {
 
   const wipe = () => {
     const confirmed = window.confirm(
-      'Delete all local data on this device? The accent, recent sections and every task will be lost.',
+      'Delete all local data on this device? The accent, recent sections, every task and every note will be lost.',
     );
     if (!confirmed) return;
 
-    try {
-      [ACCENT_KEY, RECENTS_KEY, TASKS_KEY].forEach((key) => window.localStorage.removeItem(key));
-    } catch {
+    if (!clearLocalData()) {
+      setDataError('Some local data could not be removed. Check browser storage permissions and try again.');
+      return;
     }
     window.location.reload();
   };
@@ -94,6 +98,10 @@ function SettingsPage() {
             <dd className="tabular-nums text-zinc-400">{tasks.length}</dd>
           </div>
           <div className="flex items-center justify-between gap-3">
+            <dt>Notes</dt>
+            <dd className="tabular-nums text-zinc-400">{notes.length}</dd>
+          </div>
+          <div className="flex items-center justify-between gap-3">
             <dt>Accent</dt>
             <dd className="text-zinc-400">{current.label}</dd>
           </div>
@@ -116,6 +124,7 @@ function SettingsPage() {
             Delete all local data
           </button>
         </div>
+        {dataError ? <p role="alert" className="mt-3 text-sm text-red-300">{dataError}</p> : null}
       </section>
 
       <p className="mt-8 max-w-xl text-sm leading-relaxed text-zinc-600">
