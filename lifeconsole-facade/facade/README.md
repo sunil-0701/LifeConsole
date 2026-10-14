@@ -5,9 +5,9 @@ goals, habits, finance and friends-in-progress sections, in one dark,
 keyboard-friendly console.
 
 Right now this is the **facade** — routing, layout, navigation and the shared
-UI pieces are done, appearance is configurable, and Tasks and Sticky Notes
-work against local storage. Other data-backed sections still render empty
-states until the data layer reaches them.
+UI pieces are done, appearance is configurable, and Tasks, Sticky Notes and
+Habits work against local storage. Other data-backed sections still render
+empty states until the data layer reaches them.
 
 ## Stack
 
@@ -39,6 +39,8 @@ src/
   App.jsx
   index.css
   lib/
+    calendar.js
+    habits.js
     localData.js
     notes.js
     preferences.js
@@ -47,6 +49,8 @@ src/
     tasks.js
     useStoredState.js
     useNotes.js
+    useHabits.js
+    useToday.js
     *.test.js
   components/
     layouts/
@@ -68,10 +72,11 @@ knows where you are).
 
 | Path | Section |
 | --- | --- |
-| `/` | Home — greeting hero, quick actions, today's focus, note previews, area cards |
+| `/` | Home — greeting hero, quick actions, task focus, habit progress, note previews, area cards |
 | `/tasks` | the working list: add, complete, filter, clear, delete |
 | `/sticky-notes` | local note board: create, edit, pin, search, delete |
-| `/journal` `/goals` `/finance` `/habits` | the other sections (empty states) |
+| `/habits` | daily check-ins, streaks, seven-day history and archived routines |
+| `/journal` `/goals` `/finance` | the other sections (empty states) |
 | `/wishlist` `/analytics` `/career` `/projects` | the rest (empty states) |
 | `/settings` | appearance and data — accent colour (pinned at the bottom of the rail) |
 | `*` | 404 with closest-section suggestions and a way back |
@@ -101,8 +106,9 @@ cross-tab sync on top for the pieces that behave like state:
 | `lc:recent-sections` | last five section paths, most recent first |
 | `lc:tasks` | the task list — add, complete, filter, delete, clear |
 | `lc:notes` | multiline notes, pin state, creation and edit timestamps |
+| `lc:habits` | daily habit names, creation dates, archive state and completed days |
 
-Settings shows the live counts and can clear the recents or wipe all four
+Settings shows the live counts and can clear the recents or wipe all five
 keys behind a confirmation. The reset only removes LifeConsole's keys, leaves
 unrelated browser data alone and reports storage-access failures without
 pretending the reset succeeded. The accent resolves to `--accent-rgb` in
@@ -129,9 +135,36 @@ through the storage event. This is not account sync: simultaneous edits remain
 last-write-wins. If storage is blocked or full, changes may only survive in
 memory until the page reloads; they are not uploaded or backed up elsewhere.
 
+### Habits
+
+- Add a daily habit with a name up to 120 characters. Blank names are rejected.
+- **Complete today** records a check-in; **Done today** undoes it. The button
+  exposes its pressed state to assistive technology.
+- The seven-day strip ends on today. Select a date to correct a recent
+  check-in; dates before the habit was created are disabled. Future check-ins
+  are not allowed.
+- **Current streak** counts consecutive completed days through today, or
+  through yesterday if today is still open. Missing yesterday breaks the
+  current streak. **Best streak** and the check-in total retain past progress.
+- **Archive** removes a habit from the active routine without deleting its
+  history. The Archived view is read-only until **Restore** is selected.
+  Permanent deletion requires confirmation and cannot be undone.
+- Home shows daily progress and up to three habits, prioritizing those not
+  yet completed. Archived and not-yet-started habits do not count toward the
+  daily total. Settings shows active/archived counts, and a full data reset
+  removes both groups and their histories.
+
+Day keys use the browser's **local calendar date**, not a UTC timestamp.
+Calendar arithmetic avoids treating every day as a fixed 24-hour interval.
+The current day refreshes at local midnight and when the window regains focus
+or visibility. Changing timezones does not rewrite existing check-in dates.
+Only daily routines are supported: custom schedules, reminders, renaming and
+older history editing are not implemented. Storage and cross-tab limitations
+are the same as for notes; there is no server backup or account sync.
+
 ## Verification
 
-Run `npm run lint`, `npm run test` and `npm run build` before committing.
+Run `npm run lint` and `npm run build` before committing feature changes.
 The node-based Vitest suite covers note validation, immutable edits, pin
 ordering, search and safe local-data reset alongside the existing logic tests.
 It does not exercise React interactions in a browser.
@@ -180,7 +213,8 @@ Manual smoke checklist for `/sticky-notes`:
 - [x] Settings: persisted accent colour, shortcut sheet, data counts and wipe
 - [x] Tasks: local-first list (add, complete, filter, clear, delete) plus Home focus
 - [x] Sticky Notes: local-first board, editing, pinning, search and Home previews
+- [x] Habits: daily check-ins, streaks, recent history, archiving and Home progress
 - [x] Tests: vitest over the pure logic in `lib/`
-- [ ] Remaining sections: journal, goals, finance, habits, wishlist, analytics, career, projects (empty states)
+- [ ] Remaining sections: journal, goals, finance, wishlist, analytics, career, projects (empty states)
 - [ ] Gallery and Documents (locked in the rail)
 - [ ] Remaining settings: account, sync, notifications
