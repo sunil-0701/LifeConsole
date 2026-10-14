@@ -5,6 +5,7 @@ import { clearSectionRecents, recentSections } from '../lib/sectionRecents';
 import { TASKS_KEY } from '../lib/tasks';
 import { useStoredState } from '../lib/useStoredState';
 import { useNotes } from '../lib/useNotes';
+import { useHabits } from '../lib/useHabits';
 import { clearLocalData } from '../lib/localData';
 
 const NO_TASKS = [];
@@ -14,6 +15,8 @@ function SettingsPage() {
   const [recentCount, setRecentCount] = useState(() => recentSections().length);
   const [tasks] = useStoredState(TASKS_KEY, NO_TASKS);
   const [notes] = useNotes();
+  const [habits] = useHabits();
+  const activeHabits = habits.filter((habit) => !habit.archived).length;
   const [dataError, setDataError] = useState('');
   const current = ACCENTS.find((option) => option.id === accent) ?? ACCENTS[0];
 
@@ -30,7 +33,7 @@ function SettingsPage() {
 
   const wipe = () => {
     const confirmed = window.confirm(
-      'Delete all local data on this device? The accent, recent sections, every task and every note will be lost.',
+      'Delete all local data on this device? The accent, recent sections, tasks, notes and all habit histories (including archived habits) will be lost.',
     );
     if (!confirmed) return;
 
@@ -100,6 +103,10 @@ function SettingsPage() {
           <div className="flex items-center justify-between gap-3">
             <dt>Notes</dt>
             <dd className="tabular-nums text-zinc-400">{notes.length}</dd>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <dt>Habits (active / archived)</dt>
+            <dd className="tabular-nums text-zinc-400">{activeHabits} / {habits.length - activeHabits}</dd>
           </div>
           <div className="flex items-center justify-between gap-3">
             <dt>Accent</dt>
