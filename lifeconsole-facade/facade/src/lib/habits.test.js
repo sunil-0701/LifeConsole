@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHabit, HABIT_NAME_LIMIT, normalizeHabits, removeHabit, toggleHabitDay } from './habits';
+import { createHabit, HABIT_NAME_LIMIT, habitStats, normalizeHabits, removeHabit, toggleHabitDay } from './habits';
 
 describe('habit records', () => {
   it('creates uniquely identified daily habits with trimmed names', () => {
@@ -59,5 +59,32 @@ describe('daily check-ins', () => {
     const habit = { ...createHabit('Walk', today), archived: true };
     expect(toggleHabitDay([habit], habit.id, today, today)).toEqual([habit]);
     expect(toggleHabitDay([], 'gone', today, today)).toEqual([]);
+  });
+});
+
+describe('habit streaks', () => {
+  const habit = { ...createHabit('Walk', '2024-02-01'), completedDays: [] };
+
+  it('starts at zero without history', () => {
+    expect(habitStats(habit, '2024-03-01')).toEqual({ current: 0, best: 0, total: 0 });
+  });
+
+  it('keeps yesterday’s streak alive until today is over', () => {
+    const tracked = { ...habit, completedDays: ['2024-02-28', '2024-02-29'] };
+    expect(habitStats(tracked, '2024-03-01')).toEqual({ current: 2, best: 2, total: 2 });
+    expect(habitStats(tracked, '2024-03-02').current).toBe(0);
+  });
+
+  it('extends a streak across leap day when today is completed', () => {
+    expect(habitStats({ ...habit, completedDays: ['2024-03-01', '2024-02-28', '2024-02-29'] }, '2024-03-01'))
+      .toEqual({ current: 3, best: 3, total: 3 });
+  });
+
+  it('separates best from current and ignores duplicate, future and invalid days', () => {
+    const tracked = { ...habit, completedDays: [
+      '2024-02-02', '2024-02-03', '2024-02-04', '2024-03-01',
+      '2024-03-01', '2024-03-02', 'bad', '2024-01-31',
+    ] };
+    expect(habitStats(tracked, '2024-03-01')).toEqual({ current: 1, best: 3, total: 4 });
   });
 });

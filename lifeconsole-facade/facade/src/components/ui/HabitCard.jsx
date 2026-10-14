@@ -1,7 +1,9 @@
 import { Check, Trash2 } from 'lucide-react';
+import { habitStats } from '../../lib/habits';
 
 function HabitCard({ habit, today, onRemove, onCheckIn }) {
   const completed = habit.completedDays.includes(today);
+  const stats = habitStats(habit, today);
   return (
     <li className="glass-panel min-w-0 rounded-xl p-5">
       <div className="flex items-start justify-between gap-3">
@@ -27,6 +29,11 @@ function HabitCard({ habit, today, onRemove, onCheckIn }) {
         <Check className="h-4 w-4" aria-hidden="true" />
         {completed ? 'Done today' : 'Complete today'}
       </button>
+      <dl className="mt-4 grid grid-cols-3 gap-3 text-xs">
+        <div><dt className="text-zinc-500">Current streak</dt><dd className="mt-1 font-mono tabular-nums text-zinc-300">{stats.current} days</dd></div>
+        <div><dt className="text-zinc-500">Best streak</dt><dd className="mt-1 font-mono tabular-nums text-zinc-300">{stats.best} days</dd></div>
+        <div><dt className="text-zinc-500">Check-ins</dt><dd className="mt-1 font-mono tabular-nums text-zinc-300">{stats.total}</dd></div>
+      </dl>
     </li>
   );
 }

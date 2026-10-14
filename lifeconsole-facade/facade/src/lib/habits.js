@@ -1,4 +1,4 @@
-import { isDayKey, localDay } from './calendar';
+import { isDayKey, localDay, shiftDay } from './calendar';
 
 export const HABITS_KEY = 'lc:habits';
 export const HABIT_NAME_LIMIT = 120;
@@ -41,4 +41,25 @@ export function toggleHabitDay(habits, id, day, today = localDay()) {
       : [...habit.completedDays, day].sort();
     return { ...habit, completedDays };
   });
+}
+
+export function habitStats(habit, today = localDay()) {
+  const days = [...new Set(habit.completedDays.filter((day) =>
+    isDayKey(day) && day >= habit.createdOn && day <= today))].sort();
+  let best = 0;
+  let run = 0;
+  let previous;
+  for (const day of days) {
+    run = previous && shiftDay(previous, 1) === day ? run + 1 : 1;
+    best = Math.max(best, run);
+    previous = day;
+  }
+  const completed = new Set(days);
+  let cursor = completed.has(today) ? today : shiftDay(today, -1);
+  let current = 0;
+  while (completed.has(cursor)) {
+    current += 1;
+    cursor = shiftDay(cursor, -1);
+  }
+  return { current, best, total: days.length };
 }
