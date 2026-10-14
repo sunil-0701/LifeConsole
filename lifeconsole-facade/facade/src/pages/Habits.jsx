@@ -65,9 +65,9 @@ function Habits() {
               habit={habit}
               today={today}
               onRemove={() => deleteHabit(habit)}
-              onCheckIn={() => {
-                setHabits((current) => toggleHabitDay(current, habit.id, today, today));
-                setStatus(habit.completedDays.includes(today) ? 'Today’s check-in undone.' : 'Today’s check-in saved.');
+              onCheckIn={(day) => {
+                setHabits((current) => toggleHabitDay(current, habit.id, day, today));
+                setStatus(`${day}: check-in ${habit.completedDays.includes(day) ? 'undone' : 'saved'}.`);
               }}
             />
           ))}

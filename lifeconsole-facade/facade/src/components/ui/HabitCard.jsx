@@ -1,5 +1,6 @@
 import { Check, Trash2 } from 'lucide-react';
 import { habitStats } from '../../lib/habits';
+import HabitHistory from './HabitHistory';
 
 function HabitCard({ habit, today, onRemove, onCheckIn }) {
   const completed = habit.completedDays.includes(today);
@@ -22,7 +23,7 @@ function HabitCard({ habit, today, onRemove, onCheckIn }) {
         type="button"
         aria-pressed={completed}
         aria-label={`${completed ? 'Undo today for' : 'Complete today for'} ${habit.name}`}
-        onClick={onCheckIn}
+        onClick={() => onCheckIn(today)}
         disabled={habit.archived || today < habit.createdOn}
         className={`glass-control mt-4 inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-sm disabled:cursor-not-allowed disabled:opacity-40 ${completed ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-400 hover:text-zinc-200'}`}
       >
@@ -34,6 +35,7 @@ function HabitCard({ habit, today, onRemove, onCheckIn }) {
         <div><dt className="text-zinc-500">Best streak</dt><dd className="mt-1 font-mono tabular-nums text-zinc-300">{stats.best} days</dd></div>
         <div><dt className="text-zinc-500">Check-ins</dt><dd className="mt-1 font-mono tabular-nums text-zinc-300">{stats.total}</dd></div>
       </dl>
+      <HabitHistory habit={habit} today={today} onCheckIn={onCheckIn} />
     </li>
   );
 }

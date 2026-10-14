@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHabit, HABIT_NAME_LIMIT, habitStats, normalizeHabits, removeHabit, toggleHabitDay } from './habits';
+import { createHabit, HABIT_NAME_LIMIT, habitStats, habitWeek, normalizeHabits, removeHabit, toggleHabitDay } from './habits';
 
 describe('habit records', () => {
   it('creates uniquely identified daily habits with trimmed names', () => {
@@ -86,5 +86,23 @@ describe('habit streaks', () => {
       '2024-03-01', '2024-03-02', 'bad', '2024-01-31',
     ] };
     expect(habitStats(tracked, '2024-03-01')).toEqual({ current: 1, best: 3, total: 4 });
+  });
+});
+
+describe('seven-day history', () => {
+  it('marks completions and disables dates before tracking started', () => {
+    const habit = { ...createHabit('Walk', '2026-10-12'), completedDays: ['2026-10-13'] };
+    const week = habitWeek(habit, '2026-10-14');
+    expect(week).toHaveLength(7);
+    expect(week[0]).toEqual({ day: '2026-10-08', completed: false, available: false });
+    expect(week[5]).toEqual({ day: '2026-10-13', completed: true, available: true });
+    expect(week[6].day).toBe('2026-10-14');
+  });
+
+  it('retains archived history but makes every day read-only', () => {
+    const habit = { ...createHabit('Walk', '2025-12-01'), archived: true, completedDays: ['2025-12-31'] };
+    const week = habitWeek(habit, '2026-01-02');
+    expect(week.every((day) => !day.available)).toBe(true);
+    expect(week.find((day) => day.day === '2025-12-31').completed).toBe(true);
   });
 });

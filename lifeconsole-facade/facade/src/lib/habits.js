@@ -1,4 +1,4 @@
-import { isDayKey, localDay, shiftDay } from './calendar';
+import { isDayKey, localDay, recentDays, shiftDay } from './calendar';
 
 export const HABITS_KEY = 'lc:habits';
 export const HABIT_NAME_LIMIT = 120;
@@ -62,4 +62,12 @@ export function habitStats(habit, today = localDay()) {
     cursor = shiftDay(cursor, -1);
   }
   return { current, best, total: days.length };
+}
+
+export function habitWeek(habit, today = localDay()) {
+  return recentDays(today).map((day) => ({
+    day,
+    completed: habit.completedDays.includes(day),
+    available: !habit.archived && day >= habit.createdOn,
+  }));
 }
