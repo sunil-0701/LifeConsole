@@ -75,3 +75,8 @@ export function habitWeek(habit, today = localDay()) {
 export function toggleHabitArchive(habits, id) {
   return habits.map((habit) => habit.id === id ? { ...habit, archived: !habit.archived } : habit);
 }
+
+export function habitProgress(habits, today = localDay()) {
+  const active = habits.filter((habit) => !habit.archived && habit.createdOn <= today);
+  return { active, done: active.filter((habit) => habit.completedDays.includes(today)).length, total: active.length };
+}

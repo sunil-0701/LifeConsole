@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHabit, HABIT_NAME_LIMIT, habitStats, habitWeek, normalizeHabits, removeHabit, toggleHabitArchive, toggleHabitDay } from './habits';
+import { createHabit, HABIT_NAME_LIMIT, habitProgress, habitStats, habitWeek, normalizeHabits, removeHabit, toggleHabitArchive, toggleHabitDay } from './habits';
 
 describe('habit records', () => {
   it('creates uniquely identified daily habits with trimmed names', () => {
@@ -119,5 +119,21 @@ describe('archiving habits', () => {
   it('leaves unrelated and missing records unchanged', () => {
     const habits = [createHabit('Read')];
     expect(toggleHabitArchive(habits, 'missing')[0]).toBe(habits[0]);
+  });
+});
+
+describe('daily progress', () => {
+  it('counts only active habits that have started by today', () => {
+    const today = '2026-10-14';
+    const done = { ...createHabit('Walk', today), completedDays: [today] };
+    const pending = createHabit('Read', today);
+    const archived = { ...done, id: 'old', archived: true };
+    const future = createHabit('Tomorrow', '2026-10-15');
+    expect(habitProgress([done, pending, archived, future], today))
+      .toEqual({ active: [done, pending], done: 1, total: 2 });
+  });
+
+  it('handles an empty routine without inventing completion', () => {
+    expect(habitProgress([], '2026-10-14')).toEqual({ active: [], done: 0, total: 0 });
   });
 });

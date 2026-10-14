@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import TypedText from '../components/ui/TypedText';
 import TaskRow from '../components/ui/TaskRow';
+import HabitFocus from '../components/ui/HabitFocus';
 import { TASKS_KEY, countOpen, toggleTask } from '../lib/tasks';
 import { sortNotes } from '../lib/notes';
 import { useNotes } from '../lib/useNotes';
@@ -202,6 +203,8 @@ function Home() {
           </p>
         )}
       </section>
+
+      <HabitFocus />
 
       <section className="mt-10">
         <div className="flex max-w-5xl flex-wrap items-center justify-between gap-3">
