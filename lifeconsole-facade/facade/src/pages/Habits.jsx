@@ -3,7 +3,7 @@ import { Plus, Repeat } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import HabitCard from '../components/ui/HabitCard';
 import PageHeader from '../components/ui/PageHeader';
-import { createHabit, HABIT_NAME_LIMIT, removeHabit, toggleHabitDay } from '../lib/habits';
+import { createHabit, HABIT_NAME_LIMIT, removeHabit, toggleHabitArchive, toggleHabitDay } from '../lib/habits';
 import { useHabits } from '../lib/useHabits';
 import { useToday } from '../lib/useToday';
 
@@ -11,8 +11,11 @@ function Habits() {
   const [habits, setHabits] = useHabits();
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState('');
+  const [view, setView] = useState('active');
   const composerRef = useRef(null);
   const today = useToday();
+  const activeCount = habits.filter((habit) => !habit.archived).length;
+  const visible = habits.filter((habit) => habit.archived === (view === 'archived'));
 
   const addHabit = (event) => {
     event.preventDefault();
@@ -20,6 +23,7 @@ function Habits() {
     if (!habit) return;
     setHabits((current) => [...current, habit]);
     setDraft('');
+    setView('active');
     setStatus('Habit added.');
     composerRef.current?.focus();
   };
@@ -55,16 +59,41 @@ function Habits() {
       </form>
       <p role="status" className="sr-only">{status}</p>
 
+      {habits.length > 0 ? (
+        <div role="group" aria-label="Filter habits" className="glass-panel mt-8 inline-flex flex-wrap gap-1 rounded-lg p-1">
+          {['active', 'archived'].map((option) => (
+            <button
+              key={option}
+              type="button"
+              aria-pressed={view === option}
+              onClick={() => setView(option)}
+              className={`min-h-9 rounded-md px-3 text-xs ${view === option ? 'bg-white/[0.06] text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+            >
+              {option === 'active' ? `Active (${activeCount})` : `Archived (${habits.length - activeCount})`}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
       {habits.length === 0 ? (
         <EmptyState icon={Repeat} title="No habits tracked yet." hint="Define a daily habit above to start tracking your progress." />
+      ) : visible.length === 0 ? (
+        <p className="glass-panel mt-4 max-w-xl rounded-xl p-5 text-sm text-zinc-500">
+          {view === 'active' ? 'No active habits. Add one above or restore a habit from Archived.' : 'No archived habits. Archive an active habit to preserve its history without tracking it daily.'}
+        </p>
       ) : (
-        <ul className="mt-8 grid max-w-5xl items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {habits.map((habit) => (
+        <ul className="mt-4 grid max-w-5xl items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {visible.map((habit) => (
             <HabitCard
               key={habit.id}
               habit={habit}
               today={today}
               onRemove={() => deleteHabit(habit)}
+              onArchive={() => {
+                setHabits((current) => toggleHabitArchive(current, habit.id));
+                setStatus(habit.archived ? 'Habit restored.' : 'Habit archived. History preserved.');
+                composerRef.current?.focus();
+              }}
               onCheckIn={(day) => {
                 setHabits((current) => toggleHabitDay(current, habit.id, day, today));
                 setStatus(`${day}: check-in ${habit.completedDays.includes(day) ? 'undone' : 'saved'}.`);

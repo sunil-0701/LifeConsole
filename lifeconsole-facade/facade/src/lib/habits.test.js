@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHabit, HABIT_NAME_LIMIT, habitStats, habitWeek, normalizeHabits, removeHabit, toggleHabitDay } from './habits';
+import { createHabit, HABIT_NAME_LIMIT, habitStats, habitWeek, normalizeHabits, removeHabit, toggleHabitArchive, toggleHabitDay } from './habits';
 
 describe('habit records', () => {
   it('creates uniquely identified daily habits with trimmed names', () => {
@@ -104,5 +104,20 @@ describe('seven-day history', () => {
     const week = habitWeek(habit, '2026-01-02');
     expect(week.every((day) => !day.available)).toBe(true);
     expect(week.find((day) => day.day === '2025-12-31').completed).toBe(true);
+  });
+});
+
+describe('archiving habits', () => {
+  it('archives and restores without losing completion dates', () => {
+    const habit = { ...createHabit('Walk', '2026-10-01'), completedDays: ['2026-10-14'] };
+    const archived = toggleHabitArchive([habit], habit.id);
+    expect(archived[0]).toEqual({ ...habit, archived: true });
+    expect(habit.archived).toBe(false);
+    expect(toggleHabitArchive(archived, habit.id)).toEqual([habit]);
+  });
+
+  it('leaves unrelated and missing records unchanged', () => {
+    const habits = [createHabit('Read')];
+    expect(toggleHabitArchive(habits, 'missing')[0]).toBe(habits[0]);
   });
 });

@@ -71,3 +71,7 @@ export function habitWeek(habit, today = localDay()) {
     available: !habit.archived && day >= habit.createdOn,
   }));
 }
+
+export function toggleHabitArchive(habits, id) {
+  return habits.map((habit) => habit.id === id ? { ...habit, archived: !habit.archived } : habit);
+}
