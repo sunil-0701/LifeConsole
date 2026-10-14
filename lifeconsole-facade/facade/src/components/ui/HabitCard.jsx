@@ -1,6 +1,7 @@
-import { Trash2 } from 'lucide-react';
+import { Check, Trash2 } from 'lucide-react';
 
-function HabitCard({ habit, onRemove }) {
+function HabitCard({ habit, today, onRemove, onCheckIn }) {
+  const completed = habit.completedDays.includes(today);
   return (
     <li className="glass-panel min-w-0 rounded-xl p-5">
       <div className="flex items-start justify-between gap-3">
@@ -15,6 +16,17 @@ function HabitCard({ habit, onRemove }) {
         </button>
       </div>
       <p className="mt-3 text-xs text-zinc-500">Daily · Started <time dateTime={habit.createdOn}>{habit.createdOn}</time></p>
+      <button
+        type="button"
+        aria-pressed={completed}
+        aria-label={`${completed ? 'Undo today for' : 'Complete today for'} ${habit.name}`}
+        onClick={onCheckIn}
+        disabled={habit.archived || today < habit.createdOn}
+        className={`glass-control mt-4 inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-sm disabled:cursor-not-allowed disabled:opacity-40 ${completed ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-400 hover:text-zinc-200'}`}
+      >
+        <Check className="h-4 w-4" aria-hidden="true" />
+        {completed ? 'Done today' : 'Complete today'}
+      </button>
     </li>
   );
 }

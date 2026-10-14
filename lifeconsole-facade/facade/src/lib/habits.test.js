@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHabit, HABIT_NAME_LIMIT, normalizeHabits, removeHabit } from './habits';
+import { createHabit, HABIT_NAME_LIMIT, normalizeHabits, removeHabit, toggleHabitDay } from './habits';
 
 describe('habit records', () => {
   it('creates uniquely identified daily habits with trimmed names', () => {
@@ -33,5 +33,31 @@ describe('habit records', () => {
     expect(removeHabit(habits, habits[0].id)).toEqual([habits[1]]);
     expect(removeHabit(habits, 'missing')).toEqual(habits);
     expect(habits).toHaveLength(2);
+  });
+});
+
+describe('daily check-ins', () => {
+  const today = '2026-10-14';
+
+  it('toggles a date without mutating the original or duplicating history', () => {
+    const habits = [createHabit('Walk', today), createHabit('Read', today)];
+    const done = toggleHabitDay(habits, habits[0].id, today, today);
+    expect(done[0].completedDays).toEqual([today]);
+    expect(done[1]).toBe(habits[1]);
+    expect(habits[0].completedDays).toEqual([]);
+    expect(toggleHabitDay(done, habits[0].id, today, today)).toEqual(habits);
+  });
+
+  it('rejects future, malformed and pre-creation check-ins', () => {
+    const habits = [createHabit('Walk', today)];
+    expect(toggleHabitDay(habits, habits[0].id, '2026-10-15', today)).toBe(habits);
+    expect(toggleHabitDay(habits, habits[0].id, 'bad', today)).toBe(habits);
+    expect(toggleHabitDay(habits, habits[0].id, '2026-10-13', today)).toEqual(habits);
+  });
+
+  it('does not change archived or missing habits', () => {
+    const habit = { ...createHabit('Walk', today), archived: true };
+    expect(toggleHabitDay([habit], habit.id, today, today)).toEqual([habit]);
+    expect(toggleHabitDay([], 'gone', today, today)).toEqual([]);
   });
 });

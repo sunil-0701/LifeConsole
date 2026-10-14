@@ -3,7 +3,7 @@ import { Plus, Repeat } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import HabitCard from '../components/ui/HabitCard';
 import PageHeader from '../components/ui/PageHeader';
-import { createHabit, HABIT_NAME_LIMIT, removeHabit } from '../lib/habits';
+import { createHabit, HABIT_NAME_LIMIT, removeHabit, toggleHabitDay } from '../lib/habits';
 import { useHabits } from '../lib/useHabits';
 import { useToday } from '../lib/useToday';
 
@@ -59,7 +59,18 @@ function Habits() {
         <EmptyState icon={Repeat} title="No habits tracked yet." hint="Define a daily habit above to start tracking your progress." />
       ) : (
         <ul className="mt-8 grid max-w-5xl items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {habits.map((habit) => <HabitCard key={habit.id} habit={habit} onRemove={() => deleteHabit(habit)} />)}
+          {habits.map((habit) => (
+            <HabitCard
+              key={habit.id}
+              habit={habit}
+              today={today}
+              onRemove={() => deleteHabit(habit)}
+              onCheckIn={() => {
+                setHabits((current) => toggleHabitDay(current, habit.id, today, today));
+                setStatus(habit.completedDays.includes(today) ? 'Today’s check-in undone.' : 'Today’s check-in saved.');
+              }}
+            />
+          ))}
         </ul>
       )}
     </div>

@@ -31,3 +31,14 @@ export function createHabit(name, day = localDay()) {
 export function removeHabit(habits, id) {
   return habits.filter((habit) => habit.id !== id);
 }
+
+export function toggleHabitDay(habits, id, day, today = localDay()) {
+  if (!isDayKey(day) || !isDayKey(today) || day > today) return habits;
+  return habits.map((habit) => {
+    if (habit.id !== id || habit.archived || day < habit.createdOn) return habit;
+    const completedDays = habit.completedDays.includes(day)
+      ? habit.completedDays.filter((entry) => entry !== day)
+      : [...habit.completedDays, day].sort();
+    return { ...habit, completedDays };
+  });
+}
