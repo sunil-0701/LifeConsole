@@ -47,3 +47,10 @@ export function editTask(tasks, id, text) {
   if (!trimmed) return tasks;
   return tasks.map((task) => task.id === id ? { ...task, text: trimmed } : task);
 }
+
+export function findTasks(tasks, query, filter = 'all') {
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return tasks.filter((task) =>
+    (filter === 'all' || (filter === 'open' ? !task.done : task.done)) &&
+    terms.every((term) => task.text.toLowerCase().includes(term)));
+}

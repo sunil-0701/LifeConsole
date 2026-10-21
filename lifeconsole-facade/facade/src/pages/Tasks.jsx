@@ -8,6 +8,7 @@ import {
   countOpen,
   createTask,
   editTask,
+  findTasks,
   removeTask,
   toggleTask,
 } from '../lib/tasks';
@@ -23,6 +24,7 @@ function Tasks() {
   const [tasks, setTasks] = useTasks();
   const [draft, setDraft] = useState('');
   const [filter, setFilter] = useState('all');
+  const [query, setQuery] = useState('');
 
   const addTask = (event) => {
     event.preventDefault();
@@ -36,9 +38,7 @@ function Tasks() {
 
   const open = countOpen(tasks);
   const done = tasks.length - open;
-  const visible = tasks.filter(
-    (task) => filter === 'all' || (filter === 'open' ? !task.done : task.done),
-  );
+  const visible = findTasks(tasks, query, filter);
 
   return (
     <div>
@@ -96,6 +96,11 @@ function Tasks() {
             ))}
           </div>
 
+          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
+            aria-label="Search tasks" placeholder="Search tasks…"
+            className="glass-control mt-4 block h-10 w-full max-w-xl rounded-lg px-3 text-sm text-zinc-100 placeholder:text-zinc-500" />
+          <p role="status" className="mt-2 text-xs text-zinc-500">{visible.length} of {tasks.length} tasks shown</p>
+
           <div className="mt-4 flex max-w-xl items-center justify-between gap-3">
             <p className="font-mono text-xs text-zinc-600">
               {open} open · {done} done
@@ -111,11 +116,13 @@ function Tasks() {
           </div>
 
           {visible.length === 0 ? (
-            <p className="mt-6 max-w-xl text-sm text-zinc-600">
-              {filter === 'open'
+            <div className="mt-6 max-w-xl text-sm text-zinc-500">
+              <p>{query.trim() ? 'No tasks match this search and filter.' : filter === 'open'
                 ? 'Nothing open — everything on the list is done.'
-                : 'Nothing completed yet.'}
-            </p>
+                : 'Nothing completed yet.'}</p>
+              <button type="button" onClick={() => { setQuery(''); setFilter('all'); }}
+                className="glass-control mt-3 min-h-9 rounded-lg px-3 text-xs text-zinc-300">Show all tasks</button>
+            </div>
           ) : (
             <ul className="glass-panel mt-3 max-w-xl divide-y divide-white/[0.05] rounded-xl px-5 py-2">
               {visible.map((task) => (
