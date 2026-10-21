@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ListChecks, Plus } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
@@ -25,6 +25,8 @@ function Tasks() {
   const [draft, setDraft] = useState('');
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
+  const [status, setStatus] = useState('');
+  const composerRef = useRef(null);
 
   const addTask = (event) => {
     event.preventDefault();
@@ -32,8 +34,13 @@ function Tasks() {
     const text = draft.trim();
     if (!text) return;
 
-    setTasks((current) => [createTask(text), ...current]);
+    const task = createTask(text);
+    setTasks((current) => [task, ...current]);
     setDraft('');
+    setFilter('all');
+    setQuery('');
+    setStatus('Task added.');
+    composerRef.current?.focus();
   };
 
   const open = countOpen(tasks);
@@ -46,6 +53,7 @@ function Tasks() {
 
       <form onSubmit={addTask} className="flex max-w-xl gap-2">
         <input
+          ref={composerRef}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           placeholder="What needs doing?"
@@ -61,6 +69,7 @@ function Tasks() {
           Add
         </button>
       </form>
+      <p role="status" className="sr-only">{status}</p>
 
       {tasks.length === 0 ? (
         <EmptyState
@@ -107,7 +116,12 @@ function Tasks() {
             </p>
             <button
               type="button"
-              onClick={() => setTasks((current) => clearCompleted(current))}
+              onClick={() => {
+                if (!window.confirm(`Permanently delete all ${done} completed tasks, including any hidden by filters?`)) return;
+                setTasks((current) => clearCompleted(current));
+                setStatus('Completed tasks deleted.');
+                composerRef.current?.focus();
+              }}
               disabled={done === 0}
               className="rounded-lg px-2.5 py-1 text-xs text-zinc-500 transition-colors duration-150 hover:bg-white/[0.05] hover:text-zinc-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
             >
@@ -129,9 +143,16 @@ function Tasks() {
                 <TaskRow
                   key={task.id}
                   task={task}
-                  onEdit={(text) => setTasks((current) => editTask(current, task.id, text))}
+                  onEdit={(text) => {
+                    setTasks((current) => editTask(current, task.id, text));
+                    setStatus('Task updated.');
+                  }}
                   onToggle={() => setTasks((current) => toggleTask(current, task.id))}
-                  onRemove={() => setTasks((current) => removeTask(current, task.id))}
+                  onRemove={() => {
+                    setTasks((current) => removeTask(current, task.id));
+                    setStatus('Task deleted.');
+                    composerRef.current?.focus();
+                  }}
                 />
               ))}
             </ul>
