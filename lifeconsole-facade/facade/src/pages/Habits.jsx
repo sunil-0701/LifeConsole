@@ -3,7 +3,7 @@ import { Plus, Repeat } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import HabitCard from '../components/ui/HabitCard';
 import PageHeader from '../components/ui/PageHeader';
-import { createHabit, HABIT_NAME_LIMIT, removeHabit, toggleHabitArchive, toggleHabitDay } from '../lib/habits';
+import { createHabit, HABIT_NAME_LIMIT, removeHabit, renameHabit, toggleHabitArchive, toggleHabitDay } from '../lib/habits';
 import { useHabits } from '../lib/useHabits';
 import { useToday } from '../lib/useToday';
 
@@ -88,6 +88,10 @@ function Habits() {
               key={habit.id}
               habit={habit}
               today={today}
+              onRename={(name) => {
+                setHabits((current) => renameHabit(current, habit.id, name));
+                setStatus('Habit renamed. History preserved.');
+              }}
               onRemove={() => deleteHabit(habit)}
               onArchive={() => {
                 setHabits((current) => toggleHabitArchive(current, habit.id));

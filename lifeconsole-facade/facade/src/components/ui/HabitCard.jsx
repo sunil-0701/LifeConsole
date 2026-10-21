@@ -1,15 +1,25 @@
-import { Archive, ArchiveRestore, Check, Trash2 } from 'lucide-react';
-import { habitStats } from '../../lib/habits';
+import { useRef, useState } from 'react';
+import { Archive, ArchiveRestore, Check, Pencil, Trash2 } from 'lucide-react';
+import { HABIT_NAME_LIMIT, habitStats } from '../../lib/habits';
 import HabitHistory from './HabitHistory';
 
-function HabitCard({ habit, today, onRemove, onCheckIn, onArchive }) {
+function HabitCard({ habit, today, onRemove, onCheckIn, onArchive, onRename }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const editRef = useRef(null);
+  const closeEditor = () => { setEditing(false); editRef.current?.focus(); };
   const completed = habit.completedDays.includes(today);
   const stats = habitStats(habit, today);
   return (
     <li className="glass-panel min-w-0 rounded-xl p-5">
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <h2 className="min-w-0 break-words text-base font-medium text-zinc-300 [overflow-wrap:anywhere]">{habit.name}</h2>
         <div className="flex shrink-0 gap-2">
+          <button ref={editRef} type="button" aria-label={`Rename habit: ${habit.name}`} aria-expanded={editing}
+            onClick={() => { if (editing) closeEditor(); else { setDraft(habit.name); setEditing(true); } }}
+            className="glass-control grid h-9 w-9 place-items-center rounded-lg text-zinc-500 hover:text-zinc-200">
+            <Pencil className="h-4 w-4" aria-hidden="true" />
+          </button>
           <button
             type="button"
             onClick={onArchive}
@@ -28,6 +38,23 @@ function HabitCard({ habit, today, onRemove, onCheckIn, onArchive }) {
         </button>
         </div>
       </div>
+      {editing ? (
+        <form className="mt-3" onSubmit={(event) => {
+          event.preventDefault();
+          if (!draft.trim()) return;
+          onRename(draft);
+          closeEditor();
+        }}>
+          <input autoFocus aria-label="Habit name" value={draft} maxLength={HABIT_NAME_LIMIT}
+            onChange={(event) => setDraft(event.target.value)}
+            onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); closeEditor(); } }}
+            className="glass-control h-10 w-full rounded-lg px-3 text-sm text-zinc-100" />
+          <div className="mt-2 flex gap-2">
+            <button type="submit" disabled={!draft.trim()} className="glass-control min-h-9 rounded-lg px-3 text-xs text-zinc-300 disabled:opacity-40">Save name</button>
+            <button type="button" onClick={closeEditor} className="glass-control min-h-9 rounded-lg px-3 text-xs text-zinc-400">Cancel</button>
+          </div>
+        </form>
+      ) : null}
       {habit.archived ? <p className="mt-2 font-mono text-[10px] tracking-wider text-zinc-500 uppercase">Archived · history preserved</p> : null}
       <p className="mt-3 text-xs text-zinc-500">Daily · Started <time dateTime={habit.createdOn}>{habit.createdOn}</time></p>
       <button
