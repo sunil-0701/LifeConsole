@@ -2,18 +2,15 @@ import { useState } from 'react';
 import PageHeader from '../components/ui/PageHeader';
 import { ACCENTS, applyAccent, readAccent, writeAccent } from '../lib/preferences';
 import { clearSectionRecents, recentSections } from '../lib/sectionRecents';
-import { TASKS_KEY } from '../lib/tasks';
-import { useStoredState } from '../lib/useStoredState';
+import { useTasks } from '../lib/useTasks';
 import { useNotes } from '../lib/useNotes';
 import { useHabits } from '../lib/useHabits';
 import { clearLocalData } from '../lib/localData';
 
-const NO_TASKS = [];
-
 function SettingsPage() {
   const [accent, setAccent] = useState(readAccent);
   const [recentCount, setRecentCount] = useState(() => recentSections().length);
-  const [tasks] = useStoredState(TASKS_KEY, NO_TASKS);
+  const [tasks] = useTasks();
   const [notes] = useNotes();
   const [habits] = useHabits();
   const activeHabits = habits.filter((habit) => !habit.archived).length;

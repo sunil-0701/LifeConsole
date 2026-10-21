@@ -33,6 +33,13 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
             aria-label="Edit note"
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
+            aria-keyshortcuts="Control+Enter Meta+Enter"
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' && (event.ctrlKey || event.metaKey) && !event.nativeEvent.isComposing) {
+                event.preventDefault();
+                if (!event.repeat) event.currentTarget.form.requestSubmit();
+              }
+            }}
             maxLength={5000}
             rows={5}
             className="glass-control block w-full resize-y rounded-lg px-3 py-2 text-sm text-zinc-100"

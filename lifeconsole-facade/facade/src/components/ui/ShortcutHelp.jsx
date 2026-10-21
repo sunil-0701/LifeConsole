@@ -5,6 +5,7 @@ const SHORTCUTS = [
   { keys: ['Ctrl', 'K'], description: 'Open the command palette' },
   { keys: ['↑', '↓'], description: 'Move through palette results' },
   { keys: ['Enter'], description: 'Jump to the highlighted section' },
+  { keys: ['Ctrl/⌘', 'Enter'], description: 'Add or save a note while typing' },
   { keys: ['Esc'], description: 'Close the palette, drawer or this sheet' },
   { keys: ['?'], description: 'Show this list' },
   { keys: ['Tab'], description: 'First stop on a page is skip-to-content' },

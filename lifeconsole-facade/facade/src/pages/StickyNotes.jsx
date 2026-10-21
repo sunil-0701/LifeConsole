@@ -21,6 +21,8 @@ function StickyNotes() {
     if (!note) return;
     setNotes((current) => [note, ...current]);
     setDraft('');
+    setQuery('');
+    setPinnedOnly(false);
     setStatus('Note added.');
     composerRef.current?.focus();
   };
@@ -28,6 +30,7 @@ function StickyNotes() {
   const deleteNote = (id) => {
     setNotes((current) => removeNote(current, id));
     setStatus('Note deleted.');
+    composerRef.current?.focus();
   };
 
   return (
@@ -40,6 +43,13 @@ function StickyNotes() {
           ref={composerRef}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
+          aria-keyshortcuts="Control+Enter Meta+Enter"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && (event.ctrlKey || event.metaKey) && !event.nativeEvent.isComposing) {
+              event.preventDefault();
+              if (!event.repeat) event.currentTarget.form.requestSubmit();
+            }
+          }}
           placeholder="Capture a quick thought…"
           rows={3}
           maxLength={5000}
@@ -47,7 +57,7 @@ function StickyNotes() {
           className="glass-control block w-full resize-y rounded-xl px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500"
         />
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <p id="note-storage-hint" className="text-xs text-zinc-500">Saved locally on this device.</p>
+          <p id="note-storage-hint" className="text-xs text-zinc-500">Saved locally. Ctrl/⌘+Enter adds a note.</p>
           <button type="submit" disabled={!draft.trim()} className="glass-control inline-flex min-h-10 items-center gap-2 rounded-lg px-3.5 text-sm text-zinc-200 disabled:cursor-not-allowed disabled:opacity-40">
             <Plus className="h-4 w-4" aria-hidden="true" /> Add note
           </button>

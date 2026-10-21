@@ -14,14 +14,12 @@ import {
 import TypedText from '../components/ui/TypedText';
 import TaskRow from '../components/ui/TaskRow';
 import HabitFocus from '../components/ui/HabitFocus';
-import { TASKS_KEY, countOpen, toggleTask } from '../lib/tasks';
+import { countOpen, toggleTask } from '../lib/tasks';
 import { sortNotes } from '../lib/notes';
 import { useNotes } from '../lib/useNotes';
-import { useStoredState } from '../lib/useStoredState';
+import { useTasks } from '../lib/useTasks';
 
 const BOUNDARY_HOURS = [12, 17];
-
-const NO_TASKS = [];
 
 const GREETING_DELAY = 220;
 const TYPE_SPEED = 60;
@@ -98,7 +96,7 @@ function useGreeting() {
 function Home() {
   const greeting = useGreeting();
   const navigate = useNavigate();
-  const [tasks, setTasks] = useStoredState(TASKS_KEY, NO_TASKS);
+  const [tasks, setTasks] = useTasks();
   const [notes] = useNotes();
   const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
 

@@ -1,19 +1,18 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ListChecks, Plus } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
 import TaskRow from '../components/ui/TaskRow';
 import {
-  TASKS_KEY,
   clearCompleted,
   countOpen,
   createTask,
+  editTask,
+  findTasks,
   removeTask,
   toggleTask,
 } from '../lib/tasks';
-import { useStoredState } from '../lib/useStoredState';
-
-const NO_TASKS = [];
+import { useTasks } from '../lib/useTasks';
 
 const FILTERS = [
   { id: 'all', label: 'All' },
@@ -22,9 +21,12 @@ const FILTERS = [
 ];
 
 function Tasks() {
-  const [tasks, setTasks] = useStoredState(TASKS_KEY, NO_TASKS);
+  const [tasks, setTasks] = useTasks();
   const [draft, setDraft] = useState('');
   const [filter, setFilter] = useState('all');
+  const [query, setQuery] = useState('');
+  const [status, setStatus] = useState('');
+  const composerRef = useRef(null);
 
   const addTask = (event) => {
     event.preventDefault();
@@ -32,15 +34,18 @@ function Tasks() {
     const text = draft.trim();
     if (!text) return;
 
-    setTasks((current) => [createTask(text), ...current]);
+    const task = createTask(text);
+    setTasks((current) => [task, ...current]);
     setDraft('');
+    setFilter('all');
+    setQuery('');
+    setStatus('Task added.');
+    composerRef.current?.focus();
   };
 
   const open = countOpen(tasks);
   const done = tasks.length - open;
-  const visible = tasks.filter(
-    (task) => filter === 'all' || (filter === 'open' ? !task.done : task.done),
-  );
+  const visible = findTasks(tasks, query, filter);
 
   return (
     <div>
@@ -48,6 +53,7 @@ function Tasks() {
 
       <form onSubmit={addTask} className="flex max-w-xl gap-2">
         <input
+          ref={composerRef}
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           placeholder="What needs doing?"
@@ -63,6 +69,7 @@ function Tasks() {
           Add
         </button>
       </form>
+      <p role="status" className="sr-only">{status}</p>
 
       {tasks.length === 0 ? (
         <EmptyState
@@ -98,13 +105,23 @@ function Tasks() {
             ))}
           </div>
 
+          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
+            aria-label="Search tasks" placeholder="Search tasks…"
+            className="glass-control mt-4 block h-10 w-full max-w-xl rounded-lg px-3 text-sm text-zinc-100 placeholder:text-zinc-500" />
+          <p role="status" className="mt-2 text-xs text-zinc-500">{visible.length} of {tasks.length} tasks shown</p>
+
           <div className="mt-4 flex max-w-xl items-center justify-between gap-3">
             <p className="font-mono text-xs text-zinc-600">
               {open} open · {done} done
             </p>
             <button
               type="button"
-              onClick={() => setTasks((current) => clearCompleted(current))}
+              onClick={() => {
+                if (!window.confirm(`Permanently delete all ${done} completed tasks, including any hidden by filters?`)) return;
+                setTasks((current) => clearCompleted(current));
+                setStatus('Completed tasks deleted.');
+                composerRef.current?.focus();
+              }}
               disabled={done === 0}
               className="rounded-lg px-2.5 py-1 text-xs text-zinc-500 transition-colors duration-150 hover:bg-white/[0.05] hover:text-zinc-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
             >
@@ -113,19 +130,29 @@ function Tasks() {
           </div>
 
           {visible.length === 0 ? (
-            <p className="mt-6 max-w-xl text-sm text-zinc-600">
-              {filter === 'open'
+            <div className="mt-6 max-w-xl text-sm text-zinc-500">
+              <p>{query.trim() ? 'No tasks match this search and filter.' : filter === 'open'
                 ? 'Nothing open — everything on the list is done.'
-                : 'Nothing completed yet.'}
-            </p>
+                : 'Nothing completed yet.'}</p>
+              <button type="button" onClick={() => { setQuery(''); setFilter('all'); }}
+                className="glass-control mt-3 min-h-9 rounded-lg px-3 text-xs text-zinc-300">Show all tasks</button>
+            </div>
           ) : (
             <ul className="glass-panel mt-3 max-w-xl divide-y divide-white/[0.05] rounded-xl px-5 py-2">
               {visible.map((task) => (
                 <TaskRow
                   key={task.id}
                   task={task}
+                  onEdit={(text) => {
+                    setTasks((current) => editTask(current, task.id, text));
+                    setStatus('Task updated.');
+                  }}
                   onToggle={() => setTasks((current) => toggleTask(current, task.id))}
-                  onRemove={() => setTasks((current) => removeTask(current, task.id))}
+                  onRemove={() => {
+                    setTasks((current) => removeTask(current, task.id));
+                    setStatus('Task deleted.');
+                    composerRef.current?.focus();
+                  }}
                 />
               ))}
             </ul>

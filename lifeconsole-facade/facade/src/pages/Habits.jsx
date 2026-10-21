@@ -3,7 +3,7 @@ import { Plus, Repeat } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import HabitCard from '../components/ui/HabitCard';
 import PageHeader from '../components/ui/PageHeader';
-import { createHabit, HABIT_NAME_LIMIT, removeHabit, toggleHabitArchive, toggleHabitDay } from '../lib/habits';
+import { createHabit, findHabits, HABIT_NAME_LIMIT, removeHabit, renameHabit, toggleHabitArchive, toggleHabitDay } from '../lib/habits';
 import { useHabits } from '../lib/useHabits';
 import { useToday } from '../lib/useToday';
 
@@ -12,10 +12,11 @@ function Habits() {
   const [draft, setDraft] = useState('');
   const [status, setStatus] = useState('');
   const [view, setView] = useState('active');
+  const [query, setQuery] = useState('');
   const composerRef = useRef(null);
   const today = useToday();
   const activeCount = habits.filter((habit) => !habit.archived).length;
-  const visible = habits.filter((habit) => habit.archived === (view === 'archived'));
+  const visible = findHabits(habits, query, view === 'archived');
 
   const addHabit = (event) => {
     event.preventDefault();
@@ -24,6 +25,7 @@ function Habits() {
     setHabits((current) => [...current, habit]);
     setDraft('');
     setView('active');
+    setQuery('');
     setStatus('Habit added.');
     composerRef.current?.focus();
   };
@@ -75,11 +77,21 @@ function Habits() {
         </div>
       ) : null}
 
+      {habits.length > 0 ? (
+        <div className="mt-4 max-w-xl">
+          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
+            aria-label="Search habits" placeholder="Search habit names…"
+            className="glass-control h-10 w-full rounded-lg px-3 text-sm text-zinc-100 placeholder:text-zinc-500" />
+          <p role="status" className="mt-2 text-xs text-zinc-500">{visible.length} {view} habits shown</p>
+          {query.trim() ? <button type="button" onClick={() => setQuery('')} className="glass-control mt-2 min-h-9 rounded-lg px-3 text-xs text-zinc-300">Clear search</button> : null}
+        </div>
+      ) : null}
+
       {habits.length === 0 ? (
         <EmptyState icon={Repeat} title="No habits tracked yet." hint="Define a daily habit above to start tracking your progress." />
       ) : visible.length === 0 ? (
         <p className="glass-panel mt-4 max-w-xl rounded-xl p-5 text-sm text-zinc-500">
-          {view === 'active' ? 'No active habits. Add one above or restore a habit from Archived.' : 'No archived habits. Archive an active habit to preserve its history without tracking it daily.'}
+          {query.trim() ? 'No habit names match this search in the selected view. Clear the search or switch views.' : view === 'active' ? 'No active habits. Add one above or restore a habit from Archived.' : 'No archived habits. Archive an active habit to preserve its history without tracking it daily.'}
         </p>
       ) : (
         <ul className="mt-4 grid max-w-5xl items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -88,6 +100,10 @@ function Habits() {
               key={habit.id}
               habit={habit}
               today={today}
+              onRename={(name) => {
+                setHabits((current) => renameHabit(current, habit.id, name));
+                setStatus('Habit renamed. History preserved.');
+              }}
               onRemove={() => deleteHabit(habit)}
               onArchive={() => {
                 setHabits((current) => toggleHabitArchive(current, habit.id));

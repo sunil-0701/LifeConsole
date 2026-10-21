@@ -32,6 +32,18 @@ export function removeHabit(habits, id) {
   return habits.filter((habit) => habit.id !== id);
 }
 
+export function renameHabit(habits, id, name) {
+  const trimmed = name.trim();
+  if (!trimmed || trimmed.length > HABIT_NAME_LIMIT) return habits;
+  return habits.map((habit) => habit.id === id ? { ...habit, name: trimmed } : habit);
+}
+
+export function findHabits(habits, query, archived = false) {
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return habits.filter((habit) => habit.archived === archived &&
+    terms.every((term) => habit.name.toLowerCase().includes(term)));
+}
+
 export function toggleHabitDay(habits, id, day, today = localDay()) {
   if (!isDayKey(day) || !isDayKey(today) || day > today) return habits;
   return habits.map((habit) => {
