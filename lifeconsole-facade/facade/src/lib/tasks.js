@@ -1,5 +1,17 @@
 export const TASKS_KEY = 'lc:tasks';
 
+export function normalizeTasks(value) {
+  if (!Array.isArray(value)) return [];
+  const ids = new Set();
+  return value.filter((task) => {
+    if (!task || typeof task.id !== 'string' || !task.id || ids.has(task.id) ||
+      typeof task.text !== 'string' || !task.text.trim() ||
+      typeof task.done !== 'boolean' || !Number.isFinite(task.createdAt)) return false;
+    ids.add(task.id);
+    return true;
+  });
+}
+
 export function createTask(text) {
   const id =
     typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'

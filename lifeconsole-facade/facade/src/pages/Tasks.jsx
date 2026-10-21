@@ -4,16 +4,13 @@ import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
 import TaskRow from '../components/ui/TaskRow';
 import {
-  TASKS_KEY,
   clearCompleted,
   countOpen,
   createTask,
   removeTask,
   toggleTask,
 } from '../lib/tasks';
-import { useStoredState } from '../lib/useStoredState';
-
-const NO_TASKS = [];
+import { useTasks } from '../lib/useTasks';
 
 const FILTERS = [
   { id: 'all', label: 'All' },
@@ -22,7 +19,7 @@ const FILTERS = [
 ];
 
 function Tasks() {
-  const [tasks, setTasks] = useStoredState(TASKS_KEY, NO_TASKS);
+  const [tasks, setTasks] = useTasks();
   const [draft, setDraft] = useState('');
   const [filter, setFilter] = useState('all');
 
