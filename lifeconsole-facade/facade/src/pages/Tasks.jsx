@@ -7,6 +7,7 @@ import {
   clearCompleted,
   countOpen,
   createTask,
+  editTask,
   removeTask,
   toggleTask,
 } from '../lib/tasks';
@@ -121,6 +122,7 @@ function Tasks() {
                 <TaskRow
                   key={task.id}
                   task={task}
+                  onEdit={(text) => setTasks((current) => editTask(current, task.id, text))}
                   onToggle={() => setTasks((current) => toggleTask(current, task.id))}
                   onRemove={() => setTasks((current) => removeTask(current, task.id))}
                 />

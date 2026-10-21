@@ -41,3 +41,9 @@ export function countOpen(tasks) {
 export function clearCompleted(tasks) {
   return tasks.filter((task) => !task.done);
 }
+
+export function editTask(tasks, id, text) {
+  const trimmed = text.trim();
+  if (!trimmed) return tasks;
+  return tasks.map((task) => task.id === id ? { ...task, text: trimmed } : task);
+}
