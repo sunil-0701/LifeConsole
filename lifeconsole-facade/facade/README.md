@@ -48,6 +48,7 @@ src/
     suggestions.js
     tasks.js
     useStoredState.js
+    useTasks.js
     useNotes.js
     useHabits.js
     useToday.js
@@ -73,9 +74,9 @@ knows where you are).
 | Path | Section |
 | --- | --- |
 | `/` | Home — greeting hero, quick actions, task focus, habit progress, note previews, area cards |
-| `/tasks` | the working list: add, complete, filter, clear, delete |
+| `/tasks` | add, edit, complete, search, filter, clear and delete tasks |
 | `/sticky-notes` | local note board: create, edit, pin, search, delete |
-| `/habits` | daily check-ins, streaks, seven-day history and archived routines |
+| `/habits` | daily check-ins, streaks, recent history, name editing/search and archived routines |
 | `/journal` `/goals` `/finance` | the other sections (empty states) |
 | `/wishlist` `/analytics` `/career` `/projects` | the rest (empty states) |
 | `/settings` | appearance and data — accent colour (pinned at the bottom of the rail) |
@@ -93,6 +94,10 @@ knows where you are).
 - <kbd>Esc</kbd> — dismiss the palette, the shortcut sheet or the mobile
   drawer
 - <kbd>Tab</kbd> from the top — "Skip to main content" jumps past the rail
+- <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd> in a note textarea — add
+  the note or save an edit; plain Enter still inserts a line break
+- <kbd>Enter</kbd> saves task edits and habit names; <kbd>Esc</kbd> cancels
+  these inline editors and returns focus to the edit control
 
 ## Data and storage
 
@@ -115,6 +120,19 @@ pretending the reset succeeded. The accent resolves to `--accent-rgb` in
 `index.css`, which the focus ring, background washes, active rail item,
 palette selection, spinner, task checkboxes and skip link all read.
 
+### Tasks
+
+- Add a task with Enter or **Add**. Creating one clears stale search and
+  completion filters so the new task is visible immediately.
+- **Edit** changes the text without changing the id, creation time or
+  completion state. **Save** commits the draft; **Cancel** or Escape discards it.
+- Search matches every whitespace-separated term, ignoring case, and combines
+  with All/Open/Done. **Show all tasks** recovers from an empty result.
+- Single-task deletion is immediate. **Clear completed** requires confirmation
+  and removes all completed tasks, including those hidden by search or filters.
+- `useTasks` validates stored rows and duplicate ids consistently in Tasks,
+  Home and Settings. Invalid stored rows are omitted from the usable list.
+
 ### Sticky Notes
 
 - Add a multiline note (up to 5,000 characters) with **Add note**. Blank text
@@ -127,6 +145,8 @@ palette selection, spinner, task checkboxes and skip link all read.
   across line breaks. **Pinned only** combines with the text query; **Clear
   filters** recovers from an empty result.
 - Home previews up to three notes in the same pinned-first order.
+- Ctrl/⌘+Enter submits the composer or editor. It does not trigger during IME
+  composition. New notes clear search/pinned filters so they remain visible.
 - Deleting a note is immediate and permanent; there is no undo or backup yet.
 
 `useNotes` filters malformed stored rows, duplicate ids and invalid timestamps
@@ -138,6 +158,9 @@ memory until the page reloads; they are not uploaded or backed up elsewhere.
 ### Habits
 
 - Add a daily habit with a name up to 120 characters. Blank names are rejected.
+- **Rename** edits active or archived names without resetting history, streaks
+  or archive state. Search matches all name terms within the selected
+  Active/Archived view; **Clear search** restores that view's full list.
 - **Complete today** records a check-in; **Done today** undoes it. The button
   exposes its pressed state to assistive technology.
 - The seven-day strip ends on today. Select a date to correct a recent
@@ -147,7 +170,8 @@ memory until the page reloads; they are not uploaded or backed up elsewhere.
   through yesterday if today is still open. Missing yesterday breaks the
   current streak. **Best streak** and the check-in total retain past progress.
 - **Archive** removes a habit from the active routine without deleting its
-  history. The Archived view is read-only until **Restore** is selected.
+  history. Archived check-ins are read-only until **Restore** is selected;
+  names can still be edited.
   Permanent deletion requires confirmation and cannot be undone.
 - Home shows daily progress and up to three habits, prioritizing those not
   yet completed. Archived and not-yet-started habits do not count toward the
@@ -158,7 +182,7 @@ Day keys use the browser's **local calendar date**, not a UTC timestamp.
 Calendar arithmetic avoids treating every day as a fixed 24-hour interval.
 The current day refreshes at local midnight and when the window regains focus
 or visibility. Changing timezones does not rewrite existing check-in dates.
-Only daily routines are supported: custom schedules, reminders, renaming and
+Only daily routines are supported: custom schedules, reminders and
 older history editing are not implemented. Storage and cross-tab limitations
 are the same as for notes; there is no server backup or account sync.
 
@@ -211,9 +235,9 @@ Manual smoke checklist for `/sticky-notes`:
 - [x] Accessibility: skip link, focus hand-off, drawer focus trap, live region, reduced motion
 - [x] Performance: code splitting with chunk prefetch, top-level error boundary, hidden-tab clock
 - [x] Settings: persisted accent colour, shortcut sheet, data counts and wipe
-- [x] Tasks: local-first list (add, complete, filter, clear, delete) plus Home focus
+- [x] Tasks: validated local-first list with editing, search, confirmed bulk cleanup and Home focus
 - [x] Sticky Notes: local-first board, editing, pinning, search and Home previews
-- [x] Habits: daily check-ins, streaks, recent history, archiving and Home progress
+- [x] Habits: daily check-ins, streaks, name editing/search, recent history, archiving and Home progress
 - [x] Tests: vitest over the pure logic in `lib/`
 - [ ] Remaining sections: journal, goals, finance, wishlist, analytics, career, projects (empty states)
 - [ ] Gallery and Documents (locked in the rail)
