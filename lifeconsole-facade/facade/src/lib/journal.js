@@ -30,6 +30,16 @@ export function createJournalEntry(title, text, day = localDay()) {
   return { id: crypto.randomUUID(), title: title.trim(), text: text.trim(), day, createdAt: now, updatedAt: now };
 }
 
+export function editJournalEntry(entries, id, { title, text, day }) {
+  if (!validText(title, text) || !isDayKey(day) || day > localDay()) return entries;
+  const nextTitle = title.trim();
+  const nextText = text.trim();
+  return entries.map((entry) => entry.id === id &&
+    (entry.title !== nextTitle || entry.text !== nextText || entry.day !== day)
+    ? { ...entry, title: nextTitle, text: nextText, day, updatedAt: Math.max(Date.now(), entry.updatedAt) }
+    : entry);
+}
+
 export function sortJournal(entries) {
   return [...entries].sort((a, b) => b.day.localeCompare(a.day) || b.createdAt - a.createdAt || a.id.localeCompare(b.id));
 }

@@ -4,7 +4,7 @@ import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
 import JournalEntryCard from '../components/ui/JournalEntryCard';
 import JournalEntryForm from '../components/ui/JournalEntryForm';
-import { createJournalEntry, sortJournal } from '../lib/journal';
+import { createJournalEntry, editJournalEntry, sortJournal } from '../lib/journal';
 import { useJournal } from '../lib/useJournal';
 import { useToday } from '../lib/useToday';
 
@@ -37,7 +37,13 @@ function Journal() {
         <section className="mt-8 max-w-2xl" aria-labelledby="journal-entries">
           <h2 id="journal-entries" className="font-mono text-xs tracking-wider text-zinc-500 uppercase">Your entries · {entries.length}</h2>
           <ul className="mt-3 space-y-3">
-            {ordered.map((entry) => <JournalEntryCard key={entry.id} entry={entry} />)}
+            {ordered.map((entry) => (
+              <JournalEntryCard key={entry.id} entry={entry} today={today} onEdit={(draft) => {
+                setEntries((current) => editJournalEntry(current, entry.id, draft));
+                setStatus('Journal entry updated.');
+                return true;
+              }} />
+            ))}
           </ul>
         </section>
       )}
