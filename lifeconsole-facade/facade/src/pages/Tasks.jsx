@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ListChecks, Plus } from 'lucide-react';
+import { ListChecks, Plus, Search } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
 import TaskRow from '../components/ui/TaskRow';
@@ -80,7 +80,7 @@ function Tasks() {
       ) : (
         <>
           <div
-            className="glass-panel mt-8 inline-flex rounded-lg p-1"
+            className="glass-panel mt-8 inline-flex max-w-full flex-wrap gap-1 rounded-xl p-1"
             role="group"
             aria-label="Filter tasks"
           >
@@ -96,22 +96,28 @@ function Tasks() {
                     : undefined
                 }
                 className={[
-                  'min-h-8 rounded-md px-3 py-1.5 text-xs transition-colors duration-150',
+                  'inline-flex min-h-10 items-center gap-2 rounded-lg px-3 py-1.5 text-xs transition-colors duration-150',
                   filter === option.id ? 'text-white' : 'text-zinc-500 hover:text-zinc-300',
                 ].join(' ')}
               >
                 {option.label}
+                <span className={`rounded-md px-1.5 py-0.5 font-mono text-[10px] tabular-nums ${filter === option.id ? 'bg-white/10 text-zinc-200' : 'bg-white/[0.04] text-zinc-500'}`}>
+                  {option.id === 'all' ? tasks.length : option.id === 'open' ? open : done}
+                </span>
               </button>
             ))}
           </div>
 
-          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
-            aria-label="Search tasks" placeholder="Search tasks…"
-            className="glass-control mt-4 block h-10 w-full max-w-xl rounded-lg px-3 text-sm text-zinc-100 placeholder:text-zinc-500" />
+          <div className="relative mt-4 max-w-xl">
+            <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
+            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
+              aria-label="Search tasks" placeholder="Search tasks…"
+              className="glass-control block h-11 w-full rounded-xl pr-3 pl-10 text-sm text-zinc-100 placeholder:text-zinc-500" />
+          </div>
           <p role="status" className="mt-2 text-xs text-zinc-500">{visible.length} of {tasks.length} tasks shown</p>
 
           <div className="mt-4 flex max-w-xl items-center justify-between gap-3">
-            <p className="font-mono text-xs text-zinc-600">
+            <p className="font-mono text-xs text-zinc-400">
               {open} open · {done} done
             </p>
             <button
