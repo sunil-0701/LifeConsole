@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
+  ArrowUpRight,
   BarChart3,
   ListChecks,
   NotebookPen,
@@ -95,7 +96,6 @@ function useGreeting() {
 
 function Home() {
   const greeting = useGreeting();
-  const navigate = useNavigate();
   const [tasks, setTasks] = useTasks();
   const [notes] = useNotes();
   const nameDelay = GREETING_DELAY + greeting.length * TYPE_SPEED + SYNC_GAP;
@@ -155,17 +155,16 @@ function Home() {
       </section>
 
       <section className="mt-14 border-t border-white/[0.06] pt-6 sm:mt-20">
-        <div className="flex flex-wrap gap-2">
+        <div className="grid max-w-xl gap-2 sm:grid-cols-3">
           {QUICK_ACTIONS.map((action) => (
-            <button
+            <Link
               key={action.to}
-              type="button"
-              onClick={() => navigate(action.to)}
-              className="glass-control inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm text-zinc-300 hover:text-white"
+              to={action.to}
+              className="glass-control inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm text-zinc-300 hover:text-white"
             >
-              <action.icon className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              <action.icon className="h-4 w-4 text-[rgb(var(--accent-rgb))]" strokeWidth={1.75} aria-hidden="true" />
               {action.label}
-            </button>
+            </Link>
           ))}
         </div>
       </section>
@@ -235,22 +234,20 @@ function Home() {
         <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-500 uppercase">Areas</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {AREAS.map((area) => (
-            <button
+            <Link
               key={area.to}
-              type="button"
-              onClick={() => navigate(area.to)}
-              className="glass-panel glass-interactive group flex flex-col items-start gap-2 rounded-xl p-5 text-left"
+              to={area.to}
+              className="glass-panel glass-interactive group relative flex flex-col items-start gap-2 rounded-xl p-5 text-left"
             >
-              <area.icon
-                className="mb-1 h-[18px] w-[18px] text-zinc-400 transition-colors duration-150 group-hover:text-[rgb(var(--accent-rgb))]"
-                strokeWidth={1.75}
-                aria-hidden="true"
-              />
+              <span className="mb-2 grid h-10 w-10 place-items-center rounded-xl bg-white/[0.04] text-zinc-400 transition-colors group-hover:bg-[rgb(var(--accent-rgb)/0.1)] group-hover:text-[rgb(var(--accent-rgb))]">
+                <area.icon className="h-[18px] w-[18px]" strokeWidth={1.75} aria-hidden="true" />
+              </span>
+              <ArrowUpRight className="absolute top-5 right-5 h-4 w-4 text-zinc-600 transition-colors group-hover:text-zinc-300" aria-hidden="true" />
               <span className="text-sm font-medium text-zinc-300 group-hover:text-white">
                 {area.label}
               </span>
               <span className="text-xs leading-relaxed text-zinc-500">{area.blurb}</span>
-            </button>
+            </Link>
           ))}
         </div>
       </section>
