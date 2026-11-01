@@ -30,7 +30,7 @@ function SettingsPage() {
 
   const wipe = () => {
     const confirmed = window.confirm(
-      'Delete all local data on this device? The accent, recent sections, tasks, notes and all habit histories (including archived habits) will be lost.',
+      'Delete all local data on this device? The accent, recent sections, tasks, notes, journal entries and all habit histories (including archived habits) will be lost.',
     );
     if (!confirmed) return;
 

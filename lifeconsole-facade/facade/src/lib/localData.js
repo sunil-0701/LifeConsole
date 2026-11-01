@@ -3,8 +3,9 @@ import { RECENTS_KEY } from './sectionRecents';
 import { TASKS_KEY } from './tasks';
 import { NOTES_KEY } from './notes';
 import { HABITS_KEY } from './habits';
+import { JOURNAL_KEY } from './journal';
 
-export const LOCAL_DATA_KEYS = [ACCENT_KEY, RECENTS_KEY, TASKS_KEY, NOTES_KEY, HABITS_KEY];
+export const LOCAL_DATA_KEYS = [ACCENT_KEY, RECENTS_KEY, TASKS_KEY, NOTES_KEY, HABITS_KEY, JOURNAL_KEY];
 
 // Only remove our own keys; one blocked removal must not skip the others.
 export function clearLocalData() {
