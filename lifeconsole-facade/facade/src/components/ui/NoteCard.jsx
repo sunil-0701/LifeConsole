@@ -19,8 +19,12 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
   };
 
   return (
-    <li className="glass-panel min-w-0 rounded-xl p-5">
-      {note.pinned ? <p className="mb-3 font-mono text-[10px] tracking-wider text-[rgb(var(--accent-rgb))] uppercase">Pinned</p> : null}
+    <li className="glass-panel min-w-0 rounded-xl p-5" style={note.pinned ? { borderColor: 'rgb(var(--accent-rgb) / 0.3)' } : undefined}>
+      {note.pinned ? (
+        <p className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-[rgb(var(--accent-rgb)/0.1)] px-2 py-1 font-mono text-[10px] tracking-wider text-[rgb(var(--accent-rgb))] uppercase">
+          <Pin className="h-3 w-3" aria-hidden="true" /> Pinned
+        </p>
+      ) : null}
       {editing ? (
         <form onSubmit={save} onKeyDown={(event) => {
           if (event.key === 'Escape') {
@@ -54,19 +58,20 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
           {note.text}
         </p>
       )}
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/[0.06] pt-3">
         <time dateTime={new Date(note.updatedAt).toISOString()} className="text-xs text-zinc-500">
           {new Date(note.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
         </time>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={onPin}
             aria-pressed={note.pinned}
             aria-label={`Pin note: ${note.text.slice(0, 60)}`}
-            className={`glass-control grid h-9 w-9 place-items-center rounded-lg ${note.pinned ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-500 hover:text-zinc-200'}`}
+            className={`glass-control inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs ${note.pinned ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             <Pin className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            {note.pinned ? 'Unpin' : 'Pin'}
           </button>
           <button
             ref={editButtonRef}
@@ -80,17 +85,19 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
                 setEditing(true);
               }
             }}
-            className="glass-control grid h-9 w-9 place-items-center rounded-lg text-zinc-500 hover:text-zinc-200"
+            className="glass-control inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs text-zinc-400 hover:text-zinc-200"
           >
             <Pencil className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            Edit
           </button>
           <button
-          type="button"
-          onClick={onRemove}
-          aria-label={`Delete note: ${note.text.slice(0, 60)}`}
-          className="glass-control grid h-9 w-9 shrink-0 place-items-center rounded-lg text-zinc-500 hover:text-red-300"
-        >
-          <Trash2 className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            type="button"
+            onClick={onRemove}
+            aria-label={`Delete note: ${note.text.slice(0, 60)}`}
+            className="glass-control inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs text-zinc-400 hover:text-red-300"
+          >
+            <Trash2 className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            Delete
           </button>
         </div>
       </div>
