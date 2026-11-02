@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Plus, StickyNote } from 'lucide-react';
+import { Pin, Plus, Search, StickyNote } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import PageHeader from '../components/ui/PageHeader';
 import NoteCard from '../components/ui/NoteCard';
@@ -70,22 +70,26 @@ function StickyNotes() {
       ) : (
         <>
           <div className="mt-8 flex max-w-xl flex-wrap items-center gap-2">
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              aria-label="Search notes"
-              placeholder="Search your notes…"
-              className="glass-control h-10 min-w-0 flex-1 rounded-lg px-3 text-sm text-zinc-100 placeholder:text-zinc-500"
-            />
+            <div className="relative min-w-0 flex-1 basis-48">
+              <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
+              <input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                aria-label="Search notes"
+                placeholder="Search your notes…"
+                className="glass-control h-11 w-full rounded-xl pr-3 pl-10 text-sm text-zinc-100 placeholder:text-zinc-500"
+              />
+            </div>
             <button
               type="button"
               aria-pressed={pinnedOnly}
               onClick={() => setPinnedOnly((current) => !current)}
-              className={`glass-control min-h-10 rounded-lg px-3 text-xs ${pinnedOnly ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-400'}`}
-            >Pinned only</button>
+              style={pinnedOnly ? { borderColor: 'rgb(var(--accent-rgb) / 0.35)' } : undefined}
+              className={`glass-control inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 text-xs ${pinnedOnly ? 'bg-[rgb(var(--accent-rgb)/0.1)] text-[rgb(var(--accent-rgb))]' : 'text-zinc-400 hover:text-zinc-200'}`}
+            ><Pin className="h-3.5 w-3.5" aria-hidden="true" /> Pinned only</button>
           </div>
-          <p role="status" className="mt-3 font-mono text-xs text-zinc-500">{visible.length} of {notes.length} {notes.length === 1 ? 'note' : 'notes'}</p>
+          <p role="status" className="mt-3 font-mono text-xs text-zinc-400">{visible.length} of {notes.length} {notes.length === 1 ? 'note' : 'notes'}{pinnedOnly ? ' · pinned only' : ''}</p>
           {visible.length === 0 ? (
             <div className="glass-panel mt-3 max-w-xl rounded-xl p-5">
               <p className="text-sm text-zinc-500">No notes match these filters.</p>
