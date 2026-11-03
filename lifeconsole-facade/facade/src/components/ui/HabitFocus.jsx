@@ -21,14 +21,14 @@ function HabitFocus() {
       </div>
       {total ? (
         <div className="glass-panel mt-3 rounded-xl px-5 py-4">
-          <p className="text-xs tabular-nums text-zinc-400">{done} of {total} done today{done === total ? ' — daily routine complete.' : '.'}</p>
-          <progress aria-label="Daily habit completion" value={done} max={total} style={{ accentColor: 'rgb(var(--accent-rgb))' }} className="mt-2 h-2 w-full" />
+          <p className={`text-xs leading-relaxed tabular-nums ${done === total ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-400'}`}>{done} of {total} done today{done === total ? ' — daily routine complete.' : '.'}</p>
+          <progress aria-label="Daily habit completion" value={done} max={total} style={{ accentColor: 'rgb(var(--accent-rgb))' }} className="mt-3 h-2 w-full overflow-hidden rounded-full" />
           <ul className="mt-3 divide-y divide-white/[0.05]">
             {preview.map((habit) => {
               const completed = habit.completedDays.includes(today);
               return (
                 <li key={habit.id} className="flex items-center justify-between gap-3 py-2">
-                  <span className="min-w-0 break-words text-sm text-zinc-300 [overflow-wrap:anywhere]">{habit.name}</span>
+                  <span className={`min-w-0 break-words text-sm [overflow-wrap:anywhere] ${completed ? 'text-zinc-500' : 'text-zinc-300'}`}>{habit.name}</span>
                   <button
                     type="button"
                     aria-pressed={completed}
@@ -37,7 +37,7 @@ function HabitFocus() {
                       setHabits((current) => toggleHabitDay(current, habit.id, today, today));
                       setStatus(`${habit.name}: ${completed ? 'check-in undone' : 'done today'}.`);
                     }}
-                    className={`glass-control grid h-10 w-10 shrink-0 place-items-center rounded-lg ${completed ? 'text-[rgb(var(--accent-rgb))]' : 'text-zinc-500 hover:text-zinc-200'}`}
+                    className={`glass-control grid h-11 w-11 shrink-0 place-items-center rounded-xl ${completed ? 'bg-[rgb(var(--accent-rgb)/0.1)] text-[rgb(var(--accent-rgb))]' : 'text-zinc-400 hover:text-zinc-200'}`}
                   ><Check className="h-4 w-4" aria-hidden="true" /></button>
                 </li>
               );
