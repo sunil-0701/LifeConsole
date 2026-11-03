@@ -9,7 +9,7 @@ function Topbar({ onMenu, onSearch, onHelp }) {
         type="button"
         onClick={onMenu}
         aria-label="Open navigation"
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-zinc-400 transition-colors duration-150 hover:bg-white/[0.05] hover:text-zinc-100 lg:hidden"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-zinc-400 transition-colors duration-150 hover:bg-white/[0.05] hover:text-zinc-100 lg:hidden"
       >
         <Menu className="h-5 w-5" strokeWidth={1.75} aria-hidden="true" />
       </button>
@@ -18,12 +18,13 @@ function Topbar({ onMenu, onSearch, onHelp }) {
         LifeConsole
       </span>
 
-      <div className="ml-auto flex shrink-0 items-center gap-3 sm:gap-5">
+      <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-4">
         <button
           type="button"
           onClick={onHelp}
           aria-label="Keyboard shortcuts"
-          className="glass-control grid h-9 w-9 shrink-0 place-items-center rounded-lg text-sm text-zinc-400 hover:text-zinc-100"
+          title="Keyboard shortcuts (?)"
+          className="glass-control grid h-10 w-10 shrink-0 place-items-center rounded-xl text-sm text-zinc-400 hover:text-zinc-100"
         >
           <span aria-hidden="true">?</span>
         </button>
@@ -32,7 +33,8 @@ function Topbar({ onMenu, onSearch, onHelp }) {
           type="button"
           onClick={onSearch}
           aria-label="Search sections"
-          className="glass-control flex h-9 shrink-0 items-center gap-2 rounded-lg px-3 text-sm text-zinc-400 hover:text-zinc-100"
+          title="Search sections (Ctrl/⌘+K)"
+          className="glass-control flex h-10 min-w-10 shrink-0 items-center justify-center gap-2 rounded-xl px-3 text-sm text-zinc-400 hover:text-zinc-100"
         >
           <Search className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
           <span className="hidden sm:inline">Search</span>
