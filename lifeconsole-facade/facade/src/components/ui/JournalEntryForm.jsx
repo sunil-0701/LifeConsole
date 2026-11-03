@@ -32,28 +32,31 @@ function JournalEntryForm({ entry, today, onSave, onCancel, titleRef }) {
         event.preventDefault();
         if (!event.repeat) event.currentTarget.requestSubmit();
       }
-    }} className="space-y-3">
-      <div>
+    }} className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+      <div className="min-w-0">
         <label htmlFor={`${id}-title`} className="mb-2 block text-sm text-zinc-400">Title</label>
         <input id={`${id}-title`} ref={inputRef} autoFocus={Boolean(entry)} value={title} required maxLength={JOURNAL_TITLE_LIMIT}
           onChange={(event) => setTitle(event.target.value)} placeholder="Give this moment a name…"
           className="glass-control h-11 w-full rounded-lg px-3 text-sm text-zinc-100 placeholder:text-zinc-500" />
       </div>
-      <div>
+      <div className="min-w-0">
         <label htmlFor={`${id}-day`} className="mb-2 block text-sm text-zinc-400">Entry date</label>
         <input id={`${id}-day`} type="date" value={day ?? today} required max={today}
           onChange={(event) => setDay(event.target.value)}
           className="glass-control h-11 max-w-full rounded-lg px-3 text-sm text-zinc-100 [color-scheme:dark]" />
       </div>
-      <div>
+      <div className="sm:col-span-2">
         <label htmlFor={`${id}-text`} className="mb-2 block text-sm text-zinc-400">Your entry</label>
         <textarea id={`${id}-text`} value={text} required maxLength={JOURNAL_TEXT_LIMIT} rows={6}
           onChange={(event) => setText(event.target.value)} placeholder="What is on your mind?"
           aria-keyshortcuts="Control+Enter Meta+Enter" aria-describedby={`${id}-hint`}
           className="glass-control block w-full resize-y rounded-xl px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500" />
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p id={`${id}-hint`} className="text-xs text-zinc-500">Browser-local only. Ctrl/⌘+Enter {entry ? 'saves changes' : 'adds your entry'}.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3 sm:col-span-2">
+        <div>
+          <p id={`${id}-hint`} className="text-xs text-zinc-500">Browser-local only. Ctrl/⌘+Enter {entry ? 'saves changes' : 'adds your entry'}.</p>
+          <p className="mt-1 font-mono text-[10px] tabular-nums text-zinc-500">{text.length.toLocaleString()} / {JOURNAL_TEXT_LIMIT.toLocaleString()} characters</p>
+        </div>
         <div className="flex flex-wrap gap-2">
           <button type="submit" disabled={!title.trim() || !text.trim()}
             className="glass-control min-h-10 rounded-lg px-3.5 text-sm text-zinc-200 disabled:cursor-not-allowed disabled:opacity-40">{entry ? 'Save changes' : 'Add entry'}</button>
