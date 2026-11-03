@@ -40,7 +40,8 @@ function ShortcutHelp({ onClose }) {
             ref={closeRef}
             type="button"
             onClick={onClose}
-            className="ml-auto rounded border border-white/[0.08] px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 transition-colors duration-150 hover:text-zinc-300"
+            aria-label="Close keyboard shortcuts"
+            className="glass-control ml-auto grid h-10 min-w-10 place-items-center rounded-lg px-2 font-mono text-xs text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
           >
             esc
           </button>
@@ -50,14 +51,14 @@ function ShortcutHelp({ onClose }) {
           {SHORTCUTS.map((shortcut) => (
             <li
               key={shortcut.description}
-              className="flex items-center justify-between gap-4 rounded-lg px-3 py-2"
+              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-lg px-3 py-3 odd:bg-white/[0.025]"
             >
               <span className="text-sm text-zinc-400">{shortcut.description}</span>
               <span className="flex shrink-0 items-center gap-1">
                 {shortcut.keys.map((key) => (
                   <kbd
                     key={key}
-                    className="min-w-6 rounded border border-white/[0.08] bg-white/[0.04] px-1.5 py-0.5 text-center font-mono text-[11px] text-zinc-300"
+                    className="inline-flex min-h-7 min-w-7 items-center justify-center rounded-md border border-b-2 border-white/[0.12] bg-white/[0.05] px-2 py-1 text-center font-mono text-[11px] text-zinc-200"
                   >
                     {key}
                   </kbd>
