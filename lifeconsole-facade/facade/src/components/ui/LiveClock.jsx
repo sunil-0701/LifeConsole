@@ -39,12 +39,11 @@ function LiveClock() {
   }, []);
 
   return (
-    <div className="hidden items-center gap-3 text-[11px] text-zinc-500 sm:flex">
-      <span className="whitespace-nowrap">{DATE_FORMATTER.format(now)}</span>
-      <span className="h-4 w-px bg-white/10" aria-hidden="true" />
-      <span className="whitespace-nowrap tabular-nums text-zinc-400">
+    <div className="hidden flex-col items-end gap-0.5 border-l border-white/[0.08] pl-4 text-[10px] text-zinc-500 sm:flex" aria-live="off">
+      <span className="hidden whitespace-nowrap md:block">{DATE_FORMATTER.format(now)}</span>
+      <time dateTime={now.toISOString()} title={DATE_FORMATTER.format(now)} className="whitespace-nowrap font-mono text-xs tabular-nums text-zinc-300">
         {TIME_FORMATTER.format(now)}
-      </span>
+      </time>
     </div>
   );
 }
