@@ -145,9 +145,9 @@ function CommandPalette({ onClose, onShowHelp }) {
         role="dialog"
         aria-modal="true"
         aria-label="Search LifeConsole"
-        className="glass-panel glass-overlay absolute top-[15vh] left-1/2 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl"
+        className="glass-panel glass-overlay absolute top-[8dvh] left-1/2 flex max-h-[84dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 flex-col overflow-hidden rounded-2xl sm:top-[15dvh] sm:max-h-[70dvh]"
       >
-        <div className="flex items-center gap-3 border-b border-white/[0.06] px-4">
+        <div className="flex shrink-0 items-center gap-3 border-b border-white/[0.06] px-4">
           <Search className="h-4 w-4 shrink-0 text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           <input
             ref={inputRef}
@@ -159,16 +159,16 @@ function CommandPalette({ onClose, onShowHelp }) {
             onKeyDown={onKeyDown}
             placeholder="Jump to a section or run a command…"
             aria-label="Search sections and commands"
-            className="h-12 w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none"
+            className="h-14 min-w-0 w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
           />
           <kbd className="hidden shrink-0 rounded border border-white/[0.08] px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 sm:block">
             esc
           </kbd>
         </div>
 
-        <ul role="listbox" aria-label="Sections and commands" className="max-h-72 overflow-y-auto p-2">
+        <ul role="listbox" aria-label="Sections and commands" className="min-h-0 max-h-80 overflow-y-auto overscroll-contain p-2">
           {results.length === 0 ? (
-            <li role="presentation" className="px-3 py-6 text-center text-sm text-zinc-600">
+            <li role="presentation" className="break-words px-3 py-8 text-center text-sm text-zinc-400 [overflow-wrap:anywhere]">
               Nothing matches &ldquo;{query.trim()}&rdquo;.
             </li>
           ) : (
@@ -186,7 +186,7 @@ function CommandPalette({ onClose, onShowHelp }) {
                       : undefined
                   }
                   className={[
-                    'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-100',
+                    'flex min-h-11 w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors duration-100',
                     index === safeActive
                       ? 'text-white'
                       : 'text-zinc-400 hover:text-zinc-200',
@@ -203,13 +203,13 @@ function CommandPalette({ onClose, onShowHelp }) {
                   <span className="min-w-0 flex-1 truncate font-medium">{entry.label}</span>
                   <span className="ml-auto flex shrink-0 items-center gap-2 whitespace-nowrap">
                     {entry.recent ? (
-                      <span className="font-mono text-[10px] tracking-wider text-zinc-600 uppercase">
+                      <span className="rounded bg-white/[0.05] px-1.5 py-0.5 font-mono text-[10px] tracking-wider text-zinc-400 uppercase">
                         recent
                       </span>
                     ) : null}
                     <span
                       className={[
-                        'font-mono',
+                        'hidden font-mono sm:inline',
                         entry.kind === 'action' ? 'text-[10px] tracking-wider uppercase' : 'text-[11px]',
                         index === safeActive ? 'text-zinc-400' : 'text-zinc-600',
                       ].join(' ')}
@@ -222,6 +222,7 @@ function CommandPalette({ onClose, onShowHelp }) {
             ))
           )}
         </ul>
+        <p className="shrink-0 border-t border-white/[0.06] px-4 py-3 font-mono text-[10px] text-zinc-500">↑ ↓ navigate · Enter select · Esc close</p>
       </div>
     </div>
   );
