@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Plus, Repeat } from 'lucide-react';
+import { Plus, Repeat, Search } from 'lucide-react';
 import EmptyState from '../components/ui/EmptyState';
 import HabitCard from '../components/ui/HabitCard';
 import PageHeader from '../components/ui/PageHeader';
@@ -62,16 +62,17 @@ function Habits() {
       <p role="status" className="sr-only">{status}</p>
 
       {habits.length > 0 ? (
-        <div role="group" aria-label="Filter habits" className="glass-panel mt-8 inline-flex flex-wrap gap-1 rounded-lg p-1">
+        <div role="group" aria-label="Filter habits" className="glass-panel mt-8 inline-flex max-w-full flex-wrap gap-1 rounded-xl p-1">
           {['active', 'archived'].map((option) => (
             <button
               key={option}
               type="button"
               aria-pressed={view === option}
               onClick={() => setView(option)}
-              className={`min-h-9 rounded-md px-3 text-xs ${view === option ? 'bg-white/[0.06] text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
+              className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-xs ${view === option ? 'bg-[rgb(var(--accent-rgb)/0.14)] text-white' : 'text-zinc-400 hover:text-zinc-200'}`}
             >
-              {option === 'active' ? `Active (${activeCount})` : `Archived (${habits.length - activeCount})`}
+              {option === 'active' ? 'Active' : 'Archived'}
+              <span className="rounded-md bg-white/[0.06] px-1.5 py-0.5 font-mono text-[10px] tabular-nums">{option === 'active' ? activeCount : habits.length - activeCount}</span>
             </button>
           ))}
         </div>
@@ -79,9 +80,12 @@ function Habits() {
 
       {habits.length > 0 ? (
         <div className="mt-4 max-w-xl">
-          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
-            aria-label="Search habits" placeholder="Search habit names…"
-            className="glass-control h-10 w-full rounded-lg px-3 text-sm text-zinc-100 placeholder:text-zinc-500" />
+          <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-zinc-500" aria-hidden="true" />
+            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
+              aria-label="Search habits" placeholder="Search habit names…"
+              className="glass-control h-11 w-full rounded-xl pr-3 pl-10 text-sm text-zinc-100 placeholder:text-zinc-500" />
+          </div>
           <p role="status" className="mt-2 text-xs text-zinc-500">{visible.length} {view} habits shown</p>
           {query.trim() ? <button type="button" onClick={() => setQuery('')} className="glass-control mt-2 min-h-9 rounded-lg px-3 text-xs text-zinc-300">Clear search</button> : null}
         </div>
