@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { X } from 'lucide-react';
 import NavItem from '../navigation/NavItem';
 import { PRIMARY_NAV, SETTINGS_NAV } from '../navigation/navItems';
 
@@ -70,6 +71,12 @@ function Sidebar({ open, onClose }) {
         ].join(' ')}
       >
         <div className="glass-panel flex h-full flex-col rounded-2xl bg-zinc-950/85 lg:bg-zinc-950/45">
+          <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3 lg:hidden">
+            <span className="text-sm font-semibold tracking-tight text-zinc-200">LifeConsole</span>
+            <button type="button" onClick={onClose} aria-label="Close navigation" className="glass-control grid h-10 w-10 place-items-center rounded-xl text-zinc-400 hover:text-zinc-100">
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          </div>
           <nav
             aria-label="Primary"
             onClick={onClose}
