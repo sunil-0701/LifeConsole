@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { Pencil, Pin, Trash2 } from 'lucide-react';
 
 function NoteCard({ note, onRemove, onEdit, onPin }) {
+  const editorId = useId();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const editButtonRef = useRef(null);
@@ -26,18 +27,20 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
         </p>
       ) : null}
       {editing ? (
-        <form onSubmit={save} onKeyDown={(event) => {
-          if (event.key === 'Escape') {
+        <form id={`${editorId}-form`} className="rounded-xl bg-white/[0.025] p-3" onSubmit={save} onKeyDown={(event) => {
+          if (event.key === 'Escape' && !event.nativeEvent.isComposing) {
             event.preventDefault();
             finishEditing();
           }
         }}>
+          <label htmlFor={`${editorId}-text`} className="mb-2 block text-xs font-medium text-zinc-300">Edit note</label>
           <textarea
+            id={`${editorId}-text`}
             autoFocus
-            aria-label="Edit note"
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             aria-keyshortcuts="Control+Enter Meta+Enter"
+            aria-describedby={`${editorId}-hint`}
             onKeyDown={(event) => {
               if (event.key === 'Enter' && (event.ctrlKey || event.metaKey) && !event.nativeEvent.isComposing) {
                 event.preventDefault();
@@ -48,8 +51,9 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
             rows={5}
             className="glass-control block w-full resize-y rounded-lg px-3 py-2 text-sm text-zinc-100"
           />
+          <p id={`${editorId}-hint`} className="mt-2 text-[10px] leading-relaxed text-zinc-400">Ctrl/⌘+Enter saves. Escape cancels your changes.</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            <button type="submit" disabled={!draft.trim()} className="glass-control min-h-9 rounded-lg px-3 text-xs text-zinc-200 disabled:opacity-40">Save</button>
+            <button type="submit" disabled={!draft.trim()} className="glass-control min-h-9 rounded-lg bg-[rgb(var(--accent-rgb)/0.1)] px-3 text-xs text-[rgb(var(--accent-rgb))] disabled:opacity-40">Save</button>
             <button type="button" onClick={finishEditing} className="glass-control min-h-9 rounded-lg px-3 text-xs text-zinc-400">Cancel</button>
           </div>
         </form>
@@ -76,8 +80,9 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
           <button
             ref={editButtonRef}
             type="button"
-            aria-label={`Edit note: ${note.text.slice(0, 60)}`}
+            aria-label={`${editing ? 'Cancel edit for' : 'Edit'} note: ${note.text.slice(0, 60)}`}
             aria-expanded={editing}
+            aria-controls={editing ? `${editorId}-form` : undefined}
             onClick={() => {
               if (editing) finishEditing();
               else {
@@ -88,7 +93,7 @@ function NoteCard({ note, onRemove, onEdit, onPin }) {
             className="glass-control inline-flex min-h-9 items-center gap-1.5 rounded-lg px-2.5 text-xs text-zinc-400 hover:text-zinc-200"
           >
             <Pencil className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-            Edit
+            {editing ? 'Cancel edit' : 'Edit'}
           </button>
           <button
             type="button"
