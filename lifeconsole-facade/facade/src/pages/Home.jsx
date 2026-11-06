@@ -6,6 +6,7 @@ import {
   BarChart3,
   ListChecks,
   NotebookPen,
+  Pin,
   Plus,
   Repeat,
   StickyNote,
@@ -206,19 +207,25 @@ function Home() {
       <section className="mt-10">
         <div className="flex max-w-5xl flex-wrap items-center justify-between gap-3">
           <h2 className="font-mono text-xs tracking-[0.25em] text-zinc-500 uppercase">Notes at a glance</h2>
-          <Link to="/sticky-notes" className="text-xs text-zinc-500 hover:text-zinc-300">
-            {notes.length ? `All ${notes.length} notes` : 'Add a note'}
+          <Link to="/sticky-notes" className="inline-flex min-h-10 items-center gap-1.5 rounded-lg px-2 text-xs text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200">
+            {notes.length ? `All ${notes.length} ${notes.length === 1 ? 'note' : 'notes'}` : 'Add a note'}
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
         </div>
         {reminders.length ? (
           <ul className="mt-3 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {reminders.map((note) => (
               <li key={note.id} className="min-w-0">
-                <Link to="/sticky-notes" className="glass-panel glass-interactive block h-full rounded-xl p-5">
-                  <span className="mb-2 block font-mono text-[10px] tracking-wider text-zinc-500 uppercase">
+                <Link to="/sticky-notes" className="glass-panel glass-interactive group flex h-full flex-col items-start rounded-xl p-5" style={note.pinned ? { borderColor: 'rgb(var(--accent-rgb) / 0.25)' } : undefined}>
+                  <span className={`mb-3 inline-flex items-center gap-1.5 rounded-full px-2 py-1 font-mono text-[10px] tracking-wider uppercase ${note.pinned ? 'bg-[rgb(var(--accent-rgb)/0.1)] text-[rgb(var(--accent-rgb))]' : 'bg-white/[0.04] text-zinc-400'}`}>
+                    {note.pinned ? <Pin className="h-3 w-3" aria-hidden="true" /> : null}
                     {note.pinned ? 'Pinned reminder' : 'Recent note'}
                   </span>
                   <p className="line-clamp-3 whitespace-pre-wrap break-words text-sm leading-relaxed text-zinc-300 [overflow-wrap:anywhere]">{note.text}</p>
+                  <span className="mt-auto flex w-full items-center justify-between gap-2 pt-4 text-[10px] text-zinc-500">
+                    <time dateTime={new Date(note.updatedAt).toISOString()} title={`Updated ${new Date(note.updatedAt).toLocaleString()}`}>{new Date(note.updatedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</time>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-zinc-500 group-hover:text-zinc-300" aria-hidden="true" />
+                  </span>
                 </Link>
               </li>
             ))}
