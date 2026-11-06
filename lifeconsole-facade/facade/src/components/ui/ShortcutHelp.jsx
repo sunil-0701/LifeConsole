@@ -2,11 +2,12 @@ import { useEffect, useRef } from 'react';
 import { Keyboard } from 'lucide-react';
 
 const SHORTCUTS = [
-  { keys: ['Ctrl', 'K'], description: 'Open the command palette' },
+  { keys: ['Ctrl/⌘', 'K'], description: 'Open the command palette' },
   { keys: ['↑', '↓'], description: 'Move through palette results' },
   { keys: ['Enter'], description: 'Jump to the highlighted section' },
-  { keys: ['Ctrl/⌘', 'Enter'], description: 'Add or save a note while typing' },
-  { keys: ['Esc'], description: 'Close the palette, drawer or this sheet' },
+  { keys: ['Ctrl/⌘', 'Enter'], description: 'Add or save a note or journal entry' },
+  { keys: ['Enter'], description: 'Save a task edit or habit name' },
+  { keys: ['Esc'], description: 'Cancel an inline edit or close an overlay' },
   { keys: ['?'], description: 'Show this list' },
   { keys: ['Tab'], description: 'First stop on a page is skip-to-content' },
 ];
@@ -31,9 +32,9 @@ function ShortcutHelp({ onClose }) {
         role="dialog"
         aria-modal="true"
         aria-label="Keyboard shortcuts"
-        className="glass-panel glass-overlay absolute top-[15vh] left-1/2 max-h-[75dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-y-auto overscroll-contain rounded-2xl"
+        className="glass-panel glass-overlay absolute top-[8dvh] left-1/2 flex max-h-[84dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 flex-col overflow-hidden rounded-2xl sm:top-[15dvh] sm:max-h-[70dvh]"
       >
-        <div className="flex items-center gap-3 border-b border-white/[0.06] px-4 py-3.5">
+        <div className="flex shrink-0 items-center gap-3 border-b border-white/[0.06] px-4 py-3.5">
           <Keyboard className="h-4 w-4 text-zinc-500" strokeWidth={1.75} aria-hidden="true" />
           <h2 className="text-sm font-medium text-zinc-200">Keyboard shortcuts</h2>
           <button
@@ -47,7 +48,7 @@ function ShortcutHelp({ onClose }) {
           </button>
         </div>
 
-        <ul className="p-2">
+        <ul className="min-h-0 overflow-y-auto overscroll-contain p-2">
           {SHORTCUTS.map((shortcut) => (
             <li
               key={shortcut.description}
@@ -67,6 +68,7 @@ function ShortcutHelp({ onClose }) {
             </li>
           ))}
         </ul>
+        <p className="shrink-0 border-t border-white/[0.06] px-4 py-3 text-[10px] text-zinc-400">Ctrl on Windows/Linux · ⌘ on macOS</p>
       </div>
     </div>
   );
