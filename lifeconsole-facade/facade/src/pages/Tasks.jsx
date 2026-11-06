@@ -116,27 +116,31 @@ function Tasks() {
           </div>
           <p role="status" className="mt-2 text-xs text-zinc-500">{visible.length} of {tasks.length} tasks shown</p>
 
-          <div className="mt-4 flex max-w-xl items-center justify-between gap-3">
-            <p className="font-mono text-xs text-zinc-400">
-              {open} open · {done} done
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                if (!window.confirm(`Permanently delete all ${done} completed tasks, including any hidden by filters?`)) return;
-                setTasks((current) => clearCompleted(current));
-                setStatus('Completed tasks deleted.');
-                composerRef.current?.focus();
-              }}
-              disabled={done === 0}
-              className="rounded-lg px-2.5 py-1 text-xs text-zinc-500 transition-colors duration-150 hover:bg-white/[0.05] hover:text-zinc-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
-            >
-              Clear completed ({done})
-            </button>
+          <div className="glass-panel mt-4 max-w-xl rounded-xl p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-mono text-xs text-zinc-300">
+                {done} of {tasks.length} completed
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!window.confirm(`Permanently delete all ${done} completed tasks, including any hidden by filters?`)) return;
+                  setTasks((current) => clearCompleted(current));
+                  setStatus('Completed tasks deleted.');
+                  composerRef.current?.focus();
+                }}
+                disabled={done === 0}
+                className="min-h-10 rounded-lg px-3 py-2 text-xs text-zinc-400 transition-colors duration-150 enabled:hover:bg-red-500/10 enabled:hover:text-red-300 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Clear completed ({done})
+              </button>
+            </div>
+            <progress value={done} max={tasks.length} aria-label="Task list completion" style={{ accentColor: 'rgb(var(--accent-rgb))' }} className="mt-3 block h-2 w-full overflow-hidden rounded-full" />
+            <p className="mt-2 text-xs text-zinc-400">{open ? `${open} ${open === 1 ? 'task' : 'tasks'} still open.` : 'Everything on your list is complete.'} Progress includes tasks hidden by filters.</p>
           </div>
 
           {visible.length === 0 ? (
-            <div className="mt-6 max-w-xl text-sm text-zinc-500">
+            <div className="glass-panel mt-4 max-w-xl rounded-xl p-5 text-sm leading-relaxed text-zinc-400">
               <p>{query.trim() ? 'No tasks match this search and filter.' : filter === 'open'
                 ? 'Nothing open — everything on the list is done.'
                 : 'Nothing completed yet.'}</p>
