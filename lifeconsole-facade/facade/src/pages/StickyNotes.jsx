@@ -6,6 +6,8 @@ import NoteCard from '../components/ui/NoteCard';
 import { createNote, editNote, findNotes, removeNote, toggleNotePin } from '../lib/notes';
 import { useNotes } from '../lib/useNotes';
 
+const NOTE_TEXT_LIMIT = 5000;
+
 function StickyNotes() {
   const [notes, setNotes] = useNotes();
   const [draft, setDraft] = useState('');
@@ -36,8 +38,11 @@ function StickyNotes() {
   return (
     <div>
       <PageHeader title="Sticky Notes" hint="Scraps and reminders that do not need a full page." />
-      <form onSubmit={addNote} className="max-w-xl">
-        <label htmlFor="new-note" className="mb-2 block text-sm text-zinc-400">New note</label>
+      <form onSubmit={addNote} className="glass-panel max-w-xl rounded-2xl p-5 sm:p-6">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <label htmlFor="new-note" className="text-sm font-medium text-zinc-200">New note</label>
+          <span id="note-character-count" className="font-mono text-[10px] tabular-nums text-zinc-400">{draft.length.toLocaleString()} / {NOTE_TEXT_LIMIT.toLocaleString()} characters</span>
+        </div>
         <textarea
           id="new-note"
           ref={composerRef}
@@ -51,14 +56,14 @@ function StickyNotes() {
             }
           }}
           placeholder="Capture a quick thought…"
-          rows={3}
-          maxLength={5000}
-          aria-describedby="note-storage-hint"
+          rows={4}
+          maxLength={NOTE_TEXT_LIMIT}
+          aria-describedby="note-storage-hint note-character-count"
           className="glass-control block w-full resize-y rounded-xl px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-500"
         />
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-          <p id="note-storage-hint" className="text-xs text-zinc-500">Saved locally. Ctrl/⌘+Enter adds a note.</p>
-          <button type="submit" disabled={!draft.trim()} className="glass-control inline-flex min-h-10 items-center gap-2 rounded-lg px-3.5 text-sm text-zinc-200 disabled:cursor-not-allowed disabled:opacity-40">
+          <p id="note-storage-hint" className="max-w-xs text-xs leading-relaxed text-zinc-400">Stored in this browser only. Line breaks are welcome; Ctrl/⌘+Enter adds your note.</p>
+          <button type="submit" disabled={!draft.trim()} className="glass-control inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm text-zinc-200 disabled:cursor-not-allowed disabled:opacity-40">
             <Plus className="h-4 w-4" aria-hidden="true" /> Add note
           </button>
         </div>
