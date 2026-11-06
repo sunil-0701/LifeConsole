@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, TriangleAlert } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import { ACCENTS, applyAccent, readAccent, writeAccent } from '../lib/preferences';
 import { clearSectionRecents, recentSections } from '../lib/sectionRecents';
 import { useTasks } from '../lib/useTasks';
 import { useNotes } from '../lib/useNotes';
 import { useHabits } from '../lib/useHabits';
+import { useJournal } from '../lib/useJournal';
 import { clearLocalData } from '../lib/localData';
 
 function SettingsPage() {
@@ -14,6 +15,7 @@ function SettingsPage() {
   const [tasks] = useTasks();
   const [notes] = useNotes();
   const [habits] = useHabits();
+  const [entries] = useJournal();
   const activeHabits = habits.filter((habit) => !habit.archived).length;
   const [dataError, setDataError] = useState('');
   const current = ACCENTS.find((option) => option.id === accent) ?? ACCENTS[0];
@@ -104,6 +106,10 @@ function SettingsPage() {
             <dd className="tabular-nums text-zinc-400">{notes.length}</dd>
           </div>
           <div className="flex items-center justify-between gap-3 py-2.5">
+            <dt>Journal entries</dt>
+            <dd className="tabular-nums text-zinc-400">{entries.length}</dd>
+          </div>
+          <div className="flex items-center justify-between gap-3 py-2.5">
             <dt>Habits (active / archived)</dt>
             <dd className="tabular-nums text-zinc-400">{activeHabits} / {habits.length - activeHabits}</dd>
           </div>
@@ -113,7 +119,7 @@ function SettingsPage() {
           </div>
         </dl>
 
-        <div className="mt-4 flex flex-wrap gap-2 border-t border-white/[0.08] pt-4">
+        <div className="mt-4 border-t border-white/[0.08] pt-4">
           <button
             type="button"
             onClick={clearRecents}
@@ -122,10 +128,16 @@ function SettingsPage() {
           >
             Clear recent sections
           </button>
+          <p className="mt-2 text-xs leading-relaxed text-zinc-500">Clearing recent sections leaves your tasks, notes, journal and habits unchanged.</p>
+        </div>
+        <div className="mt-5 rounded-xl border border-red-500/20 bg-red-500/[0.03] p-4">
+          <h3 className="flex items-center gap-2 text-sm font-medium text-red-300"><TriangleAlert className="h-4 w-4 shrink-0" aria-hidden="true" /> Delete device data</h3>
+          <p id="delete-data-warning" className="mt-2 text-xs leading-relaxed text-zinc-400">Removes all LifeConsole data in this browser, including archived habit histories. There is no undo or server backup.</p>
           <button
             type="button"
             onClick={wipe}
-            className="min-h-10 rounded-lg border border-red-500/25 px-3 py-2 text-xs text-red-400 transition-colors duration-150 hover:bg-red-500/10 hover:text-red-300"
+            aria-describedby="delete-data-warning"
+            className="mt-3 min-h-11 rounded-lg border border-red-500/25 px-3 py-2 text-xs text-red-400 transition-colors duration-150 hover:bg-red-500/10 hover:text-red-300"
           >
             Delete all local data
           </button>
