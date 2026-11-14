@@ -1,9 +1,9 @@
 # Frontend
-lifeconsole-facade/node_modules/
-lifeconsole-facade/dist/
+facade/node_modules/
+facade/dist/
 
 # Backend
-lifeconsole-foundation/target/
+foundation/target/
 
 # Environment
 .env
