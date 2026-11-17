@@ -22,3 +22,12 @@ npm run dev
 ```
 
 Open the local URL printed by Vite in your terminal.
+
+## Build and preview
+
+Create a production build, then serve it locally for review:
+
+```sh
+npm run build
+npm run preview
+```
