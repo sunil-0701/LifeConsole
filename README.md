@@ -39,3 +39,11 @@ Check the frontend with ESLint before submitting changes:
 ```sh
 npm run lint
 ```
+
+## Tests
+
+Run the frontend test suite once with Vitest:
+
+```sh
+npm test
+```
