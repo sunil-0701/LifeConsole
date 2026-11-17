@@ -5,3 +5,12 @@ LifeConsole is a personal data, productivity, and analytics platform for managin
 ## Frontend location
 
 The React frontend lives in `lifeconsole-facade/facade`. Run the npm commands below from that directory.
+
+## Install dependencies
+
+Install Node.js and npm, then prepare the frontend:
+
+```sh
+cd lifeconsole-facade/facade
+npm install
+```
