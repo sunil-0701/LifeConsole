@@ -14,3 +14,11 @@ Install Node.js and npm, then prepare the frontend:
 cd lifeconsole-facade/facade
 npm install
 ```
+
+## Start development
+
+```sh
+npm run dev
+```
+
+Open the local URL printed by Vite in your terminal.
