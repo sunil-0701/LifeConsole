@@ -31,3 +31,11 @@ Create a production build, then serve it locally for review:
 npm run build
 npm run preview
 ```
+
+## Lint
+
+Check the frontend with ESLint before submitting changes:
+
+```sh
+npm run lint
+```
