@@ -34,6 +34,8 @@ npm run build
 npm run preview
 ```
 
+After changing source files, run `npm run build` again to refresh the previewed build.
+
 ## Lint
 
 Check the frontend with ESLint before submitting changes:
