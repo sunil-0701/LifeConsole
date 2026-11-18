@@ -51,3 +51,5 @@ Run the frontend test suite once with Vitest:
 ```sh
 npm test
 ```
+
+For an interactive watch session during development, run `npx vitest`.
