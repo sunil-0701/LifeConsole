@@ -23,6 +23,8 @@ npm run dev
 
 Open the local URL printed by Vite in your terminal.
 
+Stop the development server with `Ctrl+C` in the same terminal.
+
 ## Build and preview
 
 Create a production build, then serve it locally for review:
