@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isDayKey, localDay, shiftDay } from './calendar';
+import { isDayKey, localDay, msUntilMidnight, recentDays, shiftDay } from './calendar';
 
 describe('calendar day keys', () => {
   it('formats local calendar fields with leading zeroes', () => {
@@ -35,5 +35,31 @@ describe('shiftDay', () => {
       expect(shiftDay('2026-01-01', amount)).toBeNull();
     }
     expect(shiftDay('9999-12-31', 1)).toBeNull();
+  });
+});
+
+describe('recentDays', () => {
+  it('returns an ascending window including the requested day', () => {
+    expect(recentDays('2026-01-02', 3)).toEqual(['2025-12-31', '2026-01-01', '2026-01-02']);
+    expect(recentDays('2026-01-02', 1)).toEqual(['2026-01-02']);
+    expect(recentDays('2026-01-02')).toHaveLength(7);
+    expect(recentDays('2026-01-02', 366)).toHaveLength(366);
+  });
+
+  it('rejects invalid dates and window sizes', () => {
+    expect(recentDays('invalid')).toEqual([]);
+    for (const count of [0, -1, 367, 1.5, NaN]) {
+      expect(recentDays('2026-01-02', count)).toEqual([]);
+    }
+  });
+});
+
+describe('msUntilMidnight', () => {
+  it('calculates the remaining milliseconds without modifying the date', () => {
+    const date = new Date(2026, 0, 15, 23, 59, 59, 250);
+    const timestamp = date.getTime();
+
+    expect(msUntilMidnight(date)).toBe(750);
+    expect(date.getTime()).toBe(timestamp);
   });
 });
