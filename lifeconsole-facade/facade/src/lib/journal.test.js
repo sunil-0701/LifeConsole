@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createJournalEntry, editJournalEntry, JOURNAL_TEXT_LIMIT, JOURNAL_TITLE_LIMIT } from './journal';
+import { createJournalEntry, editJournalEntry, formatJournalDay, JOURNAL_TEXT_LIMIT, JOURNAL_TITLE_LIMIT, normalizeJournal, sortJournal } from './journal';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -55,5 +55,44 @@ describe('editJournalEntry', () => {
     expect(editJournalEntry(entries, entry.id, { ...fields, day: '2026-01-20' })).toBe(entries);
     vi.setSystemTime(new Date('2026-01-15T12:00:00Z'));
     expect(editJournalEntry(entries, entry.id, { ...fields, title: 'Changed' })[0].updatedAt).toBe(entry.updatedAt);
+  });
+});
+
+describe('journal storage and presentation', () => {
+  it('filters duplicate IDs and malformed stored entries', () => {
+    const entry = { id: 'valid', title: 'Title', text: 'Body', day: '2026-01-14', createdAt: 100, updatedAt: 200 };
+    const invalid = [
+      null,
+      { ...entry, id: '' },
+      { ...entry, id: 'blank', title: ' ' },
+      { ...entry, id: 'date', day: '2026-02-30' },
+      { ...entry, id: 'negative', createdAt: -1 },
+      { ...entry, id: 'reversed', updatedAt: 99 },
+      { ...entry, id: 'infinite', updatedAt: Infinity },
+      { ...entry, id: 'overflow', updatedAt: 8640000000000001 },
+    ];
+
+    expect(normalizeJournal([...invalid, entry, { ...entry, title: 'Duplicate' }])).toEqual([entry]);
+    expect(normalizeJournal({})).toEqual([]);
+  });
+
+  it('sorts newest days first with deterministic timestamp and ID tie breakers', () => {
+    const entries = [
+      { id: 'b', day: '2026-01-14', createdAt: 200 },
+      { id: 'old', day: '2026-01-13', createdAt: 999 },
+      { id: 'a', day: '2026-01-14', createdAt: 200 },
+      { id: 'latest', day: '2026-01-14', createdAt: 300 },
+    ];
+
+    expect(sortJournal(entries).map((entry) => entry.id)).toEqual(['latest', 'a', 'b', 'old']);
+    expect(entries.map((entry) => entry.id)).toEqual(['b', 'old', 'a', 'latest']);
+  });
+
+  it('formats the calendar day consistently regardless of the local time zone', () => {
+    const expected = new Intl.DateTimeFormat(undefined, {
+      year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+    }).format(new Date('2026-01-01T00:00:00Z'));
+
+    expect(formatJournalDay('2026-01-01')).toBe(expected);
   });
 });
