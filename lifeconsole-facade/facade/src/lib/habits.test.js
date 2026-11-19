@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHabit, HABIT_NAME_LIMIT, normalizeHabits } from './habits';
+import { createHabit, HABIT_NAME_LIMIT, normalizeHabits, toggleHabitDay } from './habits';
 
 describe('createHabit', () => {
   it('trims names and creates independent, active habits', () => {
@@ -31,5 +31,30 @@ describe('normalizeHabits', () => {
     expect(habit.name).toBe('  Read  ');
     expect(habit.completedDays).toHaveLength(5);
     expect(normalizeHabits(null)).toEqual([]);
+  });
+});
+
+describe('toggleHabitDay', () => {
+  it('adds sorted completions and removes them on a second toggle', () => {
+    const habits = [createHabit('Read', '2026-01-01'), createHabit('Walk', '2026-01-01')];
+    const first = toggleHabitDay(habits, habits[0].id, '2026-01-03', '2026-01-04');
+    const next = toggleHabitDay(first, habits[0].id, '2026-01-02', '2026-01-04');
+
+    expect(next[0].completedDays).toEqual(['2026-01-02', '2026-01-03']);
+    expect(toggleHabitDay(next, habits[0].id, '2026-01-03', '2026-01-04')[0].completedDays).toEqual(['2026-01-02']);
+    expect(habits[0].completedDays).toEqual([]);
+    expect(next[1]).toBe(habits[1]);
+  });
+
+  it('ignores future, invalid, pre-creation and archived completions', () => {
+    const habit = createHabit('Read', '2026-01-02');
+    const habits = [habit];
+
+    for (const day of ['2026-01-05', 'invalid', '2026-01-01']) {
+      expect(toggleHabitDay(habits, habit.id, day, '2026-01-04')).toEqual(habits);
+    }
+    const archived = [{ ...habit, archived: true }];
+    expect(toggleHabitDay(archived, habit.id, '2026-01-03', '2026-01-04')).toEqual(archived);
+    expect(toggleHabitDay(habits, 'missing', '2026-01-03', '2026-01-04')).toEqual(habits);
   });
 });
